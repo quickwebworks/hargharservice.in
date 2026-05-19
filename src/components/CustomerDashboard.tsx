@@ -341,14 +341,14 @@ export function CustomerDashboard({ onBack }: CustomerDashboardProps) {
           <TabsContent value="addresses" className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold">Saved Addresses</h3>
-              <Button>
+              <Button className="bg-cta hover:bg-cta/foreground text-cta-foreground">
                 <MapPin className="h-4 w-4 mr-2" />
                 Add New Address
               </Button>
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">
-              <Card className="border-2 border-primary">
+              <Card className="border-2 border-teal-600 bg-teal-50 dark:bg-teal-950/20">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-3">
                     <Badge>Default</Badge>
@@ -450,7 +450,7 @@ export function CustomerDashboard({ onBack }: CustomerDashboardProps) {
                 </div>
 
                 <div className="flex gap-3">
-                  <Button>Save Changes</Button>
+                  <Button className="bg-cta hover:bg-cta/foreground text-cta-foreground">Save Changes</Button>
                   <Button variant="outline">Cancel</Button>
                 </div>
 

@@ -59,7 +59,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
               <span className="text-2xl font-bold">{service.price}</span>
               <span className="text-sm text-muted-foreground ml-1">starting</span>
             </div>
-            <Button variant="outline" size="sm" className="group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+            <Button variant="outline" size="sm" className="group-hover:bg-cta group-hover:text-cta-foreground border-cta/50 hover:border-cta transition-colors">
               Book Now <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
           </div>
@@ -100,7 +100,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
                     <div className="text-3xl font-bold text-primary">{service.price}</div>
                     <p className="text-sm text-muted-foreground">+ {service.gst}% GST applicable</p>
                   </div>
-                  <Button size="lg" className="w-full" onClick={() => setShowDetail(true)}>
+                  <Button size="lg" className="w-full bg-cta hover:bg-cta/foreground text-cta-foreground" onClick={() => setShowDetail(true)}>
                     Book This Service
                   </Button>
                 </div>
@@ -204,7 +204,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
                 </div>
               </div>
 
-              <Button size="lg" className="w-full">
+              <Button size="lg" className="w-full bg-cta hover:bg-cta/foreground text-cta-foreground">
                 Proceed to Payment
               </Button>
             </TabsContent>

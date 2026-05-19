@@ -225,7 +225,7 @@ export default function HomePage() {
               <Button variant="ghost" asChild>
                 <Link href="/login">Login</Link>
               </Button>
-              <Button asChild>
+              <Button asChild className="bg-cta hover:bg-cta/foreground text-cta-foreground">
                 <Link href="/register">Sign Up</Link>
               </Button>
             </div>
@@ -277,7 +277,7 @@ export default function HomePage() {
               <Button variant="outline" asChild className="w-full">
                 <Link href="/login">Login</Link>
               </Button>
-              <Button asChild className="w-full">
+              <Button asChild className="w-full bg-cta hover:bg-cta/foreground text-cta-foreground">
                 <Link href="/register">Sign Up</Link>
               </Button>
             </div>
@@ -308,7 +308,7 @@ export default function HomePage() {
                   className="pl-10 h-12 text-base"
                 />
               </div>
-              <Button size="lg" className="h-12 px-8" onClick={() => setCurrentView('services')}>
+              <Button size="lg" className="h-12 px-8 bg-cta hover:bg-cta/foreground text-cta-foreground" onClick={() => setCurrentView('services')}>
                 Search
               </Button>
             </div>
@@ -461,7 +461,7 @@ export default function HomePage() {
               </div>
 
               <div className="mt-8">
-                <Button size="lg" onClick={() => setCurrentView('services')}>
+                <Button size="lg" className="bg-cta hover:bg-cta/foreground text-cta-foreground" onClick={() => setCurrentView('services')}>
                   Book a Service Now <ArrowRight className="h-5 w-5 ml-2" />
                 </Button>
               </div>
@@ -533,7 +533,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-primary text-primary-foreground">
+      <section className="py-20 bg-gradient-to-br from-teal-900 to-teal-800 text-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Ready to Get Started?
@@ -542,10 +542,10 @@ export default function HomePage() {
             Join thousands of happy customers and experience professional home services like never before
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" variant="secondary" asChild>
+            <Button size="lg" variant="secondary" asChild className="bg-cta hover:bg-cta/foreground text-cta-foreground border-0">
               <Link href="/register">Create Free Account</Link>
             </Button>
-            <Button size="lg" variant="outline" className="bg-transparent text-primary-foreground border-primary-foreground/50 hover:bg-primary-foreground/10" onClick={() => setCurrentView('services')}>
+            <Button size="lg" className="bg-white text-teal-900 hover:bg-cream-100" onClick={() => setCurrentView('services')}>
               Browse Services
             </Button>
           </div>
