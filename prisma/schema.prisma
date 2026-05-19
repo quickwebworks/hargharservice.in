@@ -1,0 +1,303 @@
+// Har Ghar Services - Database Schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// User roles enum
+enum UserRole {
+  CUSTOMER
+  ADMIN
+  MANAGER
+  EXECUTIVE
+  DATA_ENTRY
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  PENDING
+}
+
+// Booking status enum
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  ASSIGNED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+// Payment status enum
+enum PaymentStatus {
+  PAID
+  PENDING
+  FAILED
+  REFUNDED
+}
+
+// Payment method enum
+enum PaymentMethod {
+  RAZORPAY
+  COD
+  WALLET
+  UPI
+  CARD
+  NET_BANKING
+}
+
+// Coupon type enum
+enum CouponType {
+  PERCENTAGE
+  FLAT
+}
+
+model User {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  phone     String     @unique
+  name      String
+  password  String
+  role      UserRole   @default(CUSTOMER)
+  status    UserStatus @default(PENDING)
+  otp       String?
+  otpExpiry DateTime?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  // Relations
+  bookings      Booking[]
+  reviews       Review[]
+  addresses     Address[]
+  notifications Notification[]
+  assignedJobs  Booking[] @relation("ExecutiveJobs")
+
+  @@map("users")
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String?
+  image       String?
+  icon        String?
+  isActive    Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  services Service[]
+
+  @@map("categories")
+}
+
+model Service {
+  id             String   @id @default(cuid())
+  categoryId     String
+  title          String
+  slug           String   @unique
+  description    String
+  features       String   // JSON array of features
+  price          Float
+  discountPrice  Float?
+  gst            Float    @default(18)
+  duration       Int      // in minutes
+  image          String?
+  gallery        String?  // JSON array of images
+  isActive       Boolean  @default(true)
+  isFeatured     Boolean  @default(false)
+  footerNote     String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  category  Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  bookings  Booking[]
+  reviews   Review[]
+  subServices SubService[]
+
+  @@map("services")
+}
+
+model SubService {
+  id         String   @id @default(cuid())
+  serviceId  String
+  title      String
+  description String?
+  price      Float
+  order      Int      @default(0)
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@map("sub_services")
+}
+
+model Booking {
+  id            String        @id @default(cuid())
+  bookingNo     String        @unique
+  customerId    String
+  serviceId     String
+  executiveId   String?
+  subServiceId  String?
+  bookingDate   DateTime
+  timeSlot      String
+  address       String        // JSON object
+  notes         String?
+  quantity      Int           @default(1)
+  subtotal      Float
+  gst           Float         @default(18)
+  gstAmount     Float         @default(0)
+  discount      Float         @default(0)
+  couponCode    String?
+  totalAmount   Float
+  paymentStatus PaymentStatus @default(PENDING)
+  bookingStatus BookingStatus @default(PENDING)
+  completedAt   DateTime?
+  cancelledAt   DateTime?
+  cancellationReason String?
+  beforeImage   String?
+  afterImage    String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  // Relations
+  customer  User     @relation(fields: [customerId], references: [id])
+  service   Service  @relation(fields: [serviceId], references: [id])
+  executive User?    @relation("ExecutiveJobs", fields: [executiveId], references: [id])
+  payment   Payment?
+
+  @@map("bookings")
+}
+
+model Payment {
+  id               String        @id @default(cuid())
+  bookingId        String        @unique
+  razorpayOrderId  String?
+  razorpayPaymentId String?
+  razorpaySignature String?
+  amount           Float
+  paymentMethod    PaymentMethod
+  status           PaymentStatus @default(PENDING)
+  failureReason    String?
+  refundedAt       DateTime?
+  refundAmount     Float?
+  refundId         String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  // Relations
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  customerId String
+  serviceId  String
+  bookingId  String?
+  rating     Int      // 1-5
+  review     String?
+  images     String?  // JSON array
+  isVerified Boolean  @default(false)
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  customer User    @relation(fields: [customerId], references: [id])
+  service  Service @relation(fields: [serviceId], references: [id])
+
+  @@map("reviews")
+}
+
+model Coupon {
+  id          String     @id @default(cuid())
+  code        String     @unique
+  type        CouponType
+  discount    Float
+  minAmount   Float      @default(0)
+  maxDiscount Float?
+  expiryDate  DateTime
+  usageLimit  Int?
+  usedCount   Int        @default(0)
+  services    String?    // JSON array of service IDs (null = all services)
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@map("coupons")
+}
+
+model Address {
+  id          String   @id @default(cuid())
+  customerId  String
+  label       String   // Home, Office, etc.
+  fullName    String
+  phone       String
+  addressLine1 String
+  addressLine2 String?
+  city        String
+  state       String
+  pincode     String
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  customer User @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@map("addresses")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String   // BOOKING, PAYMENT, SYSTEM
+  title     String
+  message   String
+  data      String?  // JSON object for additional data
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model Settings {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  category  String   // GENERAL, PAYMENT, SEO, EMAIL
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
+}
+
+model SupportTicket {
+  id          String   @id @default(cuid())
+  customerId  String
+  subject     String
+  message     String
+  bookingId   String?
+  status      String   @default("OPEN") // OPEN, IN_PROGRESS, RESOLVED, CLOSED
+  priority    String   @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("support_tickets")
+}
