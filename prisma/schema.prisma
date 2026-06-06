@@ -15,6 +15,7 @@ enum UserRole {
   MANAGER
   EXECUTIVE
   DATA_ENTRY
+  SUPER_ADMIN
 }
 
 enum UserStatus {
@@ -22,6 +23,12 @@ enum UserStatus {
   INACTIVE
   SUSPENDED
   PENDING
+}
+
+enum AuthProvider {
+  EMAIL
+  GOOGLE
+  PHONE
 }
 
 // Booking status enum
@@ -32,6 +39,16 @@ enum BookingStatus {
   IN_PROGRESS
   COMPLETED
   CANCELLED
+}
+
+// Job status enum
+enum JobStatus {
+  PENDING
+  ASSIGNED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  ON_HOLD
 }
 
 // Payment status enum
@@ -58,27 +75,159 @@ enum CouponType {
   FLAT
 }
 
-model User {
-  id        String     @id @default(cuid())
-  email     String     @unique
-  phone     String     @unique
-  name      String
-  password  String
-  role      UserRole   @default(CUSTOMER)
-  status    UserStatus @default(PENDING)
-  otp       String?
-  otpExpiry DateTime?
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+// SMS status enum
+enum SMSStatus {
+  PENDING
+  SENT
+  FAILED
+  DELIVERED
+}
+
+model UserType {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  code        String   @unique
+  description String?
+  permissions String?  // JSON array of permissions
+  isActive    Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   // Relations
+  users User[]
+
+  @@map("user_types")
+}
+
+model User {
+  id             String       @id @default(cuid())
+  email          String       @unique
+  phone          String       @unique
+  name           String
+  password       String?
+  role           UserRole      @default(CUSTOMER)
+  status         UserStatus   @default(PENDING)
+  provider       AuthProvider  @default(EMAIL)
+  googleId       String?      @unique
+  avatar         String?
+  userTypeId     String?
+  otp            String?
+  otpExpiry      DateTime?
+  countryId      String?
+  stateId        String?
+  cityId         String?
+  areaId         String?
+  subAreaId      String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  // Relations
+  userType      UserType?     @relation(fields: [userTypeId], references: [id])
+  country       Country?      @relation(fields: [countryId], references: [id])
+  state         State?        @relation(fields: [stateId], references: [id])
+  city          City?         @relation(fields: [cityId], references: [id])
+  area          Area?         @relation(fields: [areaId], references: [id])
+  subArea       SubArea?      @relation(fields: [subAreaId], references: [id])
   bookings      Booking[]
   reviews       Review[]
   addresses     Address[]
-  notifications Notification[]
+  notifications  Notification[]
   assignedJobs  Booking[] @relation("ExecutiveJobs")
+  createdJobs   Job[] @relation("JobCreator")
+  assignedJobs2 Job[] @relation("JobExecutive")
+  customerJobs  Job[] @relation("JobCustomer")
 
   @@map("users")
+}
+
+model Country {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  code        String   @unique // ISO code like IN, US
+  callingCode String?  // +91, +1, etc.
+  isActive    Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  states State[]
+  users  User[]
+
+  @@map("countries")
+}
+
+model State {
+  id        String   @id @default(cuid())
+  countryId String
+  name      String
+  code      String?  // State code like PB, DL
+  isActive  Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  country Country @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  cities  City[]
+  users   User[]
+
+  @@unique([countryId, name])
+  @@map("states")
+}
+
+model City {
+  id       String   @id @default(cuid())
+  stateId  String
+  name     String
+  isActive Boolean  @default(true)
+  order    Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  state State @relation(fields: [stateId], references: [id], onDelete: Cascade)
+  areas Area[]
+  users User[]
+
+  @@unique([stateId, name])
+  @@map("cities")
+}
+
+model Area {
+  id       String   @id @default(cuid())
+  cityId   String
+  name     String
+  isActive Boolean  @default(true)
+  order    Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  city  City    @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  subAreas SubArea[]
+  users User[]
+
+  @@unique([cityId, name])
+  @@map("areas")
+}
+
+model SubArea {
+  id       String   @id @default(cuid())
+  areaId   String
+  name     String
+  isActive Boolean  @default(true)
+  order    Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  area  Area  @relation(fields: [areaId], references: [id], onDelete: Cascade)
+  users User[]
+
+  @@unique([areaId, name])
+  @@map("sub_areas")
 }
 
 model Category {
@@ -123,6 +272,7 @@ model Service {
   bookings  Booking[]
   reviews   Review[]
   subServices SubService[]
+  jobs      Job[]
 
   @@map("services")
 }
@@ -177,8 +327,40 @@ model Booking {
   service   Service  @relation(fields: [serviceId], references: [id])
   executive User?    @relation("ExecutiveJobs", fields: [executiveId], references: [id])
   payment   Payment?
+  job       Job?
 
   @@map("bookings")
+}
+
+model Job {
+  id            String     @id @default(cuid())
+  bookingId     String     @unique
+  customerId    String
+  serviceId     String
+  executiveId   String?
+  assignedBy    String?    // Admin/Manager who assigned
+  jobStatus     JobStatus  @default(PENDING)
+  scheduledDate DateTime
+  scheduledTime String
+  estimatedDuration Int    // in minutes
+  actualDuration   Int?    // actual time taken
+  notes         String?
+  priority      String     @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  startTime     DateTime?
+  endTime       DateTime?
+  beforeImage   String?
+  afterImage    String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  // Relations
+  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  customer  User     @relation("JobCustomer", fields: [customerId], references: [id])
+  service   Service  @relation(fields: [serviceId], references: [id])
+  executive User?    @relation("JobExecutive", fields: [executiveId], references: [id])
+  createdBy User?    @relation("JobCreator", fields: [assignedBy], references: [id])
+
+  @@map("jobs")
 }
 
 model Payment {
@@ -276,6 +458,22 @@ model Notification {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("notifications")
+}
+
+model SMSPanel {
+  id          String    @id @default(cuid())
+  phoneNumber String
+  message     String
+  status      SMSStatus @default(PENDING)
+  sentAt      DateTime?
+  deliveredAt DateTime?
+  failedReason String?
+  provider    String?  // MSG91, Twilio, etc.
+  cost        Float?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("sms_panel")
 }
 
 model Settings {
