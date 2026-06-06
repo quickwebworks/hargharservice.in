@@ -2,7 +2,8 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
+import { signOut } from 'next-auth/react';
 import {
   LayoutDashboard,
   Users,
@@ -54,6 +55,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
+import { toast } from "@/hooks/use-toast"
+import { useSession } from 'next-auth/react';
 
 // Define the sidebar menu items structure
 const sidebarItems = [
@@ -108,6 +111,41 @@ const sidebarItems = [
 
 // Header component with profile and actions
 function AdminHeader() {
+  const { data: session } = useSession();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const handleLogout = async () => {
+    setIsLoading(true);
+    try {
+      // Clear localStorage
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('user_info');
+
+      // Sign out from NextAuth
+      await signOut({ redirect: false });
+
+      // Call logout API
+      await fetch('/api/auth/logout', { method: 'POST' });
+
+      toast({
+        title: 'Logged Out',
+        description: 'You have been successfully logged out',
+      });
+
+      router.push('/login');
+    } catch (error: any) {
+      console.error('Logout error:', error);
+      toast({
+        title: 'Logout Failed',
+        description: error.message || 'An error occurred during logout',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <header className="flex h-16 items-center justify-between border-b border-teal-200 bg-white px-6">
       <div className="flex items-center gap-4">
@@ -186,8 +224,12 @@ function AdminHeader() {
                   <User className="h-4 w-4 text-white" />
                 </div>
                 <div className="text-left">
-                  <p className="text-sm font-medium text-teal-900">Admin</p>
-                  <p className="text-xs text-muted-foreground">admin@harghar.com</p>
+                  <p className="text-sm font-medium text-teal-900">
+                    {session?.user?.name || 'Admin'}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {session?.user?.email || 'admin@harghar.com'}
+                  </p>
                 </div>
               </div>
               <ChevronDown className="h-4 w-4" />
@@ -205,9 +247,13 @@ function AdminHeader() {
               <span>Notifications</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-orange-600 hover:text-orange-700 hover:bg-orange-50 cursor-pointer">
+            <DropdownMenuItem
+              className="text-orange-600 hover:text-orange-700 hover:bg-orange-50 cursor-pointer"
+              onClick={handleLogout}
+              disabled={isLoading}
+            >
               <LogOut className="mr-2 h-4 w-4" />
-              <span>Logout</span>
+              <span>{isLoading ? 'Logging out...' : 'Logout'}</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

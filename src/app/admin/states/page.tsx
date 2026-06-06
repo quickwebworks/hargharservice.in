@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { DataTable, Column } from '@/components/admin/DataTable';
 import { CRUDDialog, FormField } from '@/components/admin/CRUDDialog';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { MapPin } from 'lucide-react';
 
 interface State {
