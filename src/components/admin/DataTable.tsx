@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState, type ReactNode } from 'react';
 import {
   Table,
   TableBody,
@@ -26,7 +26,7 @@ import { Pencil, Trash2, Plus, Search, ChevronLeft, ChevronRight } from 'lucide-
 export interface Column<T> {
   key: string;
   header: string;
-  render?: (item: T) => React.ReactNode;
+  render?: (item: T) => ReactNode;
   sortable?: boolean;
 }
 

@@ -1,5 +1,6 @@
 'use client';
 
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -55,14 +56,14 @@ export function CRUDDialog({
   submitButtonText = 'Save',
   loading = false,
 }: CRUDDialogProps) {
-  const [formData, setFormData] = useState<Record<string, any>>(data || {});
+  const [formData, setFormData] = useState<Record<string, any>>(() => data || {});
 
   // Update form data when data prop changes
-  useState(() => {
+  useEffect(() => {
     if (data) {
       setFormData(data);
     }
-  });
+  }, [data]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
