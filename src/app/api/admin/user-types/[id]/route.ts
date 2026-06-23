@@ -4,11 +4,12 @@ import { prisma, handleApiError } from '@/lib/prisma-helper';
 // GET - Single user type
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const userType = await prisma.userType.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!userType) {
@@ -24,22 +25,21 @@ export async function GET(
 // PATCH - Update user type
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
-    const { name, code, description, permissions, isActive, order } = body;
+    const { name, code, description, isActive, order } = body;
 
-    // Check if exists
     const existing = await prisma.userType.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!existing) {
       return NextResponse.json({ error: 'User type not found' }, { status: 404 });
     }
 
-    // Check for duplicate code if changed
     if (code && code !== existing.code) {
       const duplicate = await prisma.userType.findUnique({ where: { code } });
       if (duplicate) {
@@ -48,12 +48,11 @@ export async function PATCH(
     }
 
     const userType = await prisma.userType.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         ...(name !== undefined && { name }),
         ...(code !== undefined && { code }),
-        ...(description !== undefined && { description }),
-        ...(permissions !== undefined && { permissions: permissions ? JSON.stringify(permissions) : null }),
+        ...(description !== undefined && { description: description || null }),
         ...(isActive !== undefined && { isActive }),
         ...(order !== undefined && { order }),
       },
@@ -68,12 +67,13 @@ export async function PATCH(
 // DELETE - Delete user type
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Check if has users
+    const { id } = await params;
+
     const userCount = await prisma.user.count({
-      where: { userTypeId: params.id },
+      where: { userTypeId: id },
     });
 
     if (userCount > 0) {
@@ -81,7 +81,7 @@ export async function DELETE(
     }
 
     await prisma.userType.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ success: true });

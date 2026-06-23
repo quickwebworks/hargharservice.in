@@ -1,22 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma, handleApiError, getPaginationParams, getFilterParams } from '@/lib/prisma-helper';
+import { prisma, handleApiError, getPaginationParams } from '@/lib/prisma-helper';
 
 // GET - List all users
 export async function GET(request: NextRequest) {
   try {
-    const { skip, pageSize } = getPaginationParams(request.nextUrl.searchParams);
+    const { skip, pageSize, page } = getPaginationParams(request.nextUrl.searchParams);
     const search = request.nextUrl.searchParams.get('search');
     const role = request.nextUrl.searchParams.get('role');
     const status = request.nextUrl.searchParams.get('status');
     const countryId = request.nextUrl.searchParams.get('countryId');
 
-    const where: any = {};
+    const where: Record<string, any> = {};
 
     if (search) {
       where.OR = [
-        { name: { contains: search, mode: 'insensitive' as const } },
-        { email: { contains: search, mode: 'insensitive' as const } },
-        { phone: { contains: search, mode: 'insensitive' as const } },
+        { name: { contains: search } },
+        { email: { contains: search } },
+        { phone: { contains: search } },
       ];
     }
 
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
       prisma.user.count({ where }),
     ]);
 
-    return NextResponse.json({ data, total, page: Math.floor(skip / pageSize) + 1, pageSize });
+    return NextResponse.json({ data, total, page, pageSize });
   } catch (error) {
     return handleApiError(error, 'Failed to fetch users');
   }
@@ -60,20 +60,17 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, phone, name, password, role, status, userTypeId, countryId, stateId, cityId, areaId, subAreaId } = body;
+    const { email, phone, name, password, role, status, userTypeId } = body;
 
-    // Validate required fields
     if (!email || !phone || !name) {
       return NextResponse.json({ error: 'Email, phone, and name are required' }, { status: 400 });
     }
 
-    // Check for duplicate email
     const existingEmail = await prisma.user.findUnique({ where: { email } });
     if (existingEmail) {
       return NextResponse.json({ error: 'Email already exists' }, { status: 400 });
     }
 
-    // Check for duplicate phone
     const existingPhone = await prisma.user.findUnique({ where: { phone } });
     if (existingPhone) {
       return NextResponse.json({ error: 'Phone already exists' }, { status: 400 });
@@ -85,14 +82,9 @@ export async function POST(request: NextRequest) {
         phone,
         name,
         password: password || null,
-        role: role || 'CUSTOMER',
-        status: status || 'PENDING',
-        userTypeId,
-        countryId,
-        stateId,
-        cityId,
-        areaId,
-        subAreaId,
+        role: (role as any) || 'CUSTOMER',
+        status: (status as any) || 'PENDING',
+        userTypeId: userTypeId || null,
       },
     });
 

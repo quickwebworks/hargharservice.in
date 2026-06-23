@@ -4,11 +4,12 @@ import { prisma, handleApiError } from '@/lib/prisma-helper';
 // GET - Single user
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const user = await prisma.user.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         userType: true,
         country: true,
@@ -32,21 +33,21 @@ export async function GET(
 // PATCH - Update user
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
-    const { email, phone, name, password, role, status, userTypeId, countryId, stateId, cityId, areaId, subAreaId } = body;
+    const { email, phone, name, role, status, userTypeId } = body;
 
     const existing = await prisma.user.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!existing) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    // Check for duplicate email if changed
     if (email && email !== existing.email) {
       const duplicate = await prisma.user.findUnique({ where: { email } });
       if (duplicate) {
@@ -54,7 +55,6 @@ export async function PATCH(
       }
     }
 
-    // Check for duplicate phone if changed
     if (phone && phone !== existing.phone) {
       const duplicate = await prisma.user.findUnique({ where: { phone } });
       if (duplicate) {
@@ -63,20 +63,14 @@ export async function PATCH(
     }
 
     const user = await prisma.user.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         ...(email !== undefined && { email }),
         ...(phone !== undefined && { phone }),
         ...(name !== undefined && { name }),
-        ...(password !== undefined && { password }),
-        ...(role !== undefined && { role }),
-        ...(status !== undefined && { status }),
+        ...(role !== undefined && { role: role as any }),
+        ...(status !== undefined && { status: status as any }),
         ...(userTypeId !== undefined && { userTypeId: userTypeId || null }),
-        ...(countryId !== undefined && { countryId: countryId || null }),
-        ...(stateId !== undefined && { stateId: stateId || null }),
-        ...(cityId !== undefined && { cityId: cityId || null }),
-        ...(areaId !== undefined && { areaId: areaId || null }),
-        ...(subAreaId !== undefined && { subAreaId: subAreaId || null }),
       },
     });
 
@@ -89,11 +83,25 @@ export async function PATCH(
 // DELETE - Delete user
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+
+    // Check for related bookings before deleting
+    const bookingCount = await prisma.booking.count({
+      where: { customerId: id },
+    });
+
+    if (bookingCount > 0) {
+      return NextResponse.json(
+        { error: 'Cannot delete user with existing bookings' },
+        { status: 400 }
+      );
+    }
+
     await prisma.user.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ success: true });

@@ -40,14 +40,15 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const body = await request.json();
-    const existing = await prisma.booking.findUnique({ where: { id: params.id } });
+    const existing = await prisma.booking.findUnique({ where: { id } });
     if (!existing) return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
 
     const booking = await prisma.booking.update({
-      where: { id: params.id },
+      where: { id },
       data: body,
     });
     return NextResponse.json(booking);
@@ -56,9 +57,10 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    await prisma.booking.delete({ where: { id: params.id } });
+    const { id } = await params;
+    await prisma.booking.delete({ where: { id } });
     return NextResponse.json({ success: true });
   } catch (error) {
     return handleApiError(error, 'Failed to delete booking');

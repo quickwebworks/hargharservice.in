@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma, handleApiError } from '@/lib/prisma-helper';
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const service = await prisma.service.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: { category: true },
     });
     if (!service) return NextResponse.json({ error: 'Service not found' }, { status: 404 });
@@ -14,10 +15,11 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const body = await request.json();
-    const existing = await prisma.service.findUnique({ where: { id: params.id } });
+    const existing = await prisma.service.findUnique({ where: { id } });
     if (!existing) return NextResponse.json({ error: 'Service not found' }, { status: 404 });
 
     if (body.slug && body.slug !== existing.slug) {
@@ -26,7 +28,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     }
 
     const service = await prisma.service.update({
-      where: { id: params.id },
+      where: { id },
       data: body,
     });
     return NextResponse.json(service);
@@ -35,9 +37,10 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    await prisma.service.delete({ where: { id: params.id } });
+    const { id } = await params;
+    await prisma.service.delete({ where: { id } });
     return NextResponse.json({ success: true });
   } catch (error) {
     return handleApiError(error, 'Failed to delete service');

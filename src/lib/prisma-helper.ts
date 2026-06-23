@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { NextResponse } from 'next/server';
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
@@ -6,9 +7,12 @@ export const prisma = globalForPrisma.prisma || new PrismaClient();
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
-export async function handleApiError(error: unknown, message: string = 'An error occurred') {
+export function handleApiError(error: unknown, message: string = 'An error occurred') {
   console.error(message, error);
-  return Response.json({ error: message, details: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
+  return NextResponse.json(
+    { error: message, details: error instanceof Error ? error.message : 'Unknown error' },
+    { status: 500 }
+  );
 }
 
 export function getPaginationParams(searchParams: URLSearchParams) {

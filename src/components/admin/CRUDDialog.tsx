@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -45,6 +45,22 @@ export interface CRUDDialogProps {
   loading?: boolean;
 }
 
+function buildInitialFormData(fields: FormField[], data?: Record<string, any>): Record<string, any> {
+  const initialData: Record<string, any> = {};
+  fields.forEach((field) => {
+    if (data && data.id && data[field.name] !== undefined) {
+      initialData[field.name] = data[field.name];
+    } else if (field.type === 'switch') {
+      initialData[field.name] = true;
+    } else if (field.type === 'number') {
+      initialData[field.name] = 0;
+    } else {
+      initialData[field.name] = '';
+    }
+  });
+  return initialData;
+}
+
 export function CRUDDialog({
   open,
   onOpenChange,
@@ -56,18 +72,41 @@ export function CRUDDialog({
   submitButtonText = 'Save',
   loading = false,
 }: CRUDDialogProps) {
-  const [formData, setFormData] = useState<Record<string, any>>(() => data || {});
+  // Use a counter to force re-initialization when dialog opens or data changes
+  const [resetKey, setResetKey] = useState(0);
+  const [formData, setFormData] = useState<Record<string, any>>(() => buildInitialFormData(fields, data));
 
-  // Update form data when data prop changes
-  useEffect(() => {
-    if (data) {
-      setFormData(data);
+  // Reset form data when dialog opens with new data - use a callback approach
+  const handleOpenChange = useCallback((newOpen: boolean) => {
+    if (newOpen) {
+      // When opening, compute fresh initial data
+      setFormData(buildInitialFormData(fields, data));
+      setResetKey(prev => prev + 1);
     }
-  }, [data]);
+    onOpenChange(newOpen);
+  }, [fields, data, onOpenChange]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSubmit(formData);
+
+    // Only submit the field values
+    const submitData: Record<string, any> = {};
+    fields.forEach((field) => {
+      submitData[field.name] = formData[field.name];
+    });
+
+    // Convert empty strings to null for optional fields
+    fields.forEach((field) => {
+      if (!field.required && submitData[field.name] === '') {
+        submitData[field.name] = null;
+      }
+      // Convert number strings to actual numbers
+      if (field.type === 'number' && submitData[field.name] !== '') {
+        submitData[field.name] = Number(submitData[field.name]);
+      }
+    });
+
+    await onSubmit(submitData);
   };
 
   const handleFieldChange = (name: string, value: any) => {
@@ -75,8 +114,8 @@ export function CRUDDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto" key={resetKey}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
@@ -94,7 +133,7 @@ export function CRUDDialog({
                   id={field.name}
                   type={field.type}
                   placeholder={field.placeholder}
-                  value={formData[field.name] || ''}
+                  value={formData[field.name] ?? ''}
                   onChange={(e) => handleFieldChange(field.name, e.target.value)}
                   required={field.required}
                 />
@@ -102,19 +141,19 @@ export function CRUDDialog({
                 <Textarea
                   id={field.name}
                   placeholder={field.placeholder}
-                  value={formData[field.name] || ''}
+                  value={formData[field.name] ?? ''}
                   onChange={(e) => handleFieldChange(field.name, e.target.value)}
                   required={field.required}
                   rows={3}
                 />
               ) : field.type === 'select' ? (
                 <Select
-                  value={formData[field.name] || ''}
+                  value={formData[field.name] ?? ''}
                   onValueChange={(value) => handleFieldChange(field.name, value)}
                   required={field.required}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder={field.placeholder} />
+                    <SelectValue placeholder={field.placeholder || `Select ${field.label}`} />
                   </SelectTrigger>
                   <SelectContent>
                     {field.options?.map((option) => (
@@ -127,14 +166,14 @@ export function CRUDDialog({
               ) : field.type === 'switch' ? (
                 <Switch
                   id={field.name}
-                  checked={formData[field.name] || false}
+                  checked={formData[field.name] ?? false}
                   onCheckedChange={(checked) => handleFieldChange(field.name, checked)}
                 />
               ) : field.type === 'date' ? (
                 <Input
                   id={field.name}
                   type="date"
-                  value={formData[field.name] || ''}
+                  value={formData[field.name] ?? ''}
                   onChange={(e) => handleFieldChange(field.name, e.target.value)}
                   required={field.required}
                 />

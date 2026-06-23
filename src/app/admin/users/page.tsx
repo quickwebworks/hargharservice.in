@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { DataTable, Column } from '@/components/admin/DataTable';
-import { CRUDDialog, FormField } from '@/components/admin/CRUDDialog';
+import React, { useState, useEffect, useCallback } from 'react';
+import { DataTable, type Column } from '@/components/admin/DataTable';
+import { CRUDDialog, type FormField } from '@/components/admin/CRUDDialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, Shield, MapPin } from 'lucide-react';
+import { Users } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
-interface User {
+interface UserItem {
   id: string;
   email: string;
   phone: string;
@@ -29,11 +30,11 @@ interface SelectOption {
 }
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<UserItem[]>([]);
   const [countries, setCountries] = useState<SelectOption[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [editingUser, setEditingUser] = useState<UserItem | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
@@ -42,7 +43,7 @@ export default function UsersPage() {
   const [totalCount, setTotalCount] = useState(0);
   const [submitting, setSubmitting] = useState(false);
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams({
@@ -55,61 +56,84 @@ export default function UsersPage() {
       });
       const res = await fetch(`/api/admin/users?${params}`);
       const json = await res.json();
+
+      if (!res.ok) {
+        throw new Error(json.error || 'Failed to fetch users');
+      }
+
       setUsers(json.data || []);
       setTotalCount(json.total || 0);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch users:', error);
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to load users',
+        variant: 'destructive',
+      });
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, searchQuery, roleFilter, statusFilter, countryFilter]);
 
-  const fetchCountries = async () => {
+  const fetchCountries = useCallback(async () => {
     try {
       const res = await fetch('/api/admin/countries?pageSize=1000');
       const json = await res.json();
-      setCountries(json.data?.map((c: any) => ({ label: c.name, value: c.id })) || []);
+      if (res.ok) {
+        setCountries(json.data?.map((c: any) => ({ label: c.name, value: c.id })) || []);
+      }
     } catch (error) {
       console.error('Failed to fetch countries:', error);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchUsers();
+  }, [fetchUsers]);
+
+  useEffect(() => {
     fetchCountries();
-  }, [currentPage, searchQuery, roleFilter, statusFilter, countryFilter]);
+  }, [fetchCountries]);
 
   const handleCreate = () => {
     setEditingUser(null);
     setDialogOpen(true);
   };
 
-  const handleEdit = (user: User) => {
+  const handleEdit = (user: UserItem) => {
     setEditingUser(user);
     setDialogOpen(true);
   };
 
-  const handleDelete = async (user: User) => {
-    if (!confirm('Are you sure you want to delete this user?')) return;
-
+  const handleDelete = async (user: UserItem) => {
     try {
       const res = await fetch(`/api/admin/users/${user.id}`, { method: 'DELETE' });
+      const json = await res.json();
+
       if (res.ok) {
+        toast({
+          title: 'Deleted',
+          description: `"${user.name}" has been deleted successfully`,
+        });
         fetchUsers();
       } else {
-        const error = await res.json();
-        alert(error.error || 'Failed to delete user');
+        throw new Error(json.error || 'Failed to delete');
       }
-    } catch (error) {
-      console.error('Failed to delete user:', error);
-      alert('Failed to delete user');
+    } catch (error: any) {
+      toast({
+        title: 'Delete Failed',
+        description: error.message || 'Failed to delete user',
+        variant: 'destructive',
+      });
     }
   };
 
   const handleSubmit = async (data: Record<string, any>) => {
     setSubmitting(true);
     try {
-      const url = editingUser ? `/api/admin/users/${editingUser.id}` : '/api/admin/users';
+      const url = editingUser
+        ? `/api/admin/users/${editingUser.id}`
+        : '/api/admin/users';
       const method = editingUser ? 'PATCH' : 'POST';
 
       const res = await fetch(url, {
@@ -118,22 +142,59 @@ export default function UsersPage() {
         body: JSON.stringify(data),
       });
 
+      const json = await res.json();
+
       if (res.ok) {
+        toast({
+          title: editingUser ? 'Updated' : 'Created',
+          description: editingUser
+            ? `"${data.name}" has been updated successfully`
+            : `"${data.name}" has been created successfully`,
+        });
         setDialogOpen(false);
         fetchUsers();
       } else {
-        const error = await res.json();
-        alert(error.error || 'Failed to save user');
+        throw new Error(json.error || 'Failed to save');
       }
-    } catch (error) {
-      console.error('Failed to save user:', error);
-      alert('Failed to save user');
+    } catch (error: any) {
+      toast({
+        title: 'Save Failed',
+        description: error.message || 'An error occurred',
+        variant: 'destructive',
+      });
     } finally {
       setSubmitting(false);
     }
   };
 
-  const columns: Column<User>[] = [
+  const handleSearchChange = (val: string) => {
+    setSearchQuery(val);
+    setCurrentPage(1);
+  };
+
+  const handleRoleFilterChange = (val: string) => {
+    setRoleFilter(val);
+    setCurrentPage(1);
+  };
+
+  const handleStatusFilterChange = (val: string) => {
+    setStatusFilter(val);
+    setCurrentPage(1);
+  };
+
+  const handleCountryFilterChange = (val: string) => {
+    setCountryFilter(val);
+    setCurrentPage(1);
+  };
+
+  const clearFilters = () => {
+    setRoleFilter('');
+    setStatusFilter('');
+    setCountryFilter('');
+    setCurrentPage(1);
+  };
+
+  const columns: Column<UserItem>[] = [
     {
       key: 'name',
       header: 'Name',
@@ -192,6 +253,7 @@ export default function UsersPage() {
       name: 'role',
       label: 'Role',
       type: 'select',
+      required: true,
       options: [
         { label: 'Customer', value: 'CUSTOMER' },
         { label: 'Executive', value: 'EXECUTIVE' },
@@ -205,6 +267,7 @@ export default function UsersPage() {
       name: 'status',
       label: 'Status',
       type: 'select',
+      required: true,
       options: [
         { label: 'Active', value: 'ACTIVE' },
         { label: 'Pending', value: 'PENDING' },
@@ -225,7 +288,7 @@ export default function UsersPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Users className="h-5 w-5 text-primary" />
+            <Users className="h-5 w-5 text-teal-700" />
             Users Management
           </CardTitle>
           <CardDescription>Manage all users with filters (role, status, location)</CardDescription>
@@ -234,7 +297,7 @@ export default function UsersPage() {
           <div className="flex flex-wrap gap-4">
             <select
               value={roleFilter}
-              onChange={(e) => setRoleFilter(e.target.value)}
+              onChange={(e) => handleRoleFilterChange(e.target.value)}
               className="px-3 py-2 border rounded-md bg-background"
             >
               <option value="">All Roles</option>
@@ -248,7 +311,7 @@ export default function UsersPage() {
 
             <select
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
+              onChange={(e) => handleStatusFilterChange(e.target.value)}
               className="px-3 py-2 border rounded-md bg-background"
             >
               <option value="">All Status</option>
@@ -260,7 +323,7 @@ export default function UsersPage() {
 
             <select
               value={countryFilter}
-              onChange={(e) => setCountryFilter(e.target.value)}
+              onChange={(e) => handleCountryFilterChange(e.target.value)}
               className="px-3 py-2 border rounded-md bg-background"
             >
               <option value="">All Countries</option>
@@ -273,11 +336,7 @@ export default function UsersPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => {
-                  setRoleFilter('');
-                  setStatusFilter('');
-                  setCountryFilter('');
-                }}
+                onClick={clearFilters}
               >
                 Clear Filters
               </Button>
@@ -292,7 +351,7 @@ export default function UsersPage() {
             onEdit={handleEdit}
             onDelete={handleDelete}
             searchValue={searchQuery}
-            onSearchChange={setSearchQuery}
+            onSearchChange={handleSearchChange}
             currentPage={currentPage}
             onPageChange={setCurrentPage}
             totalCount={totalCount}
@@ -308,7 +367,7 @@ export default function UsersPage() {
         title={editingUser ? 'Edit User' : 'Add User'}
         description={editingUser ? 'Update user details' : 'Create a new user'}
         fields={fields}
-        data={editingUser || {}}
+        data={editingUser || undefined}
         onSubmit={handleSubmit}
         submitButtonText={editingUser ? 'Update' : 'Create'}
         loading={submitting}

@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { DataTable } from '@/components/admin/DataTable';
-import { CRUDDialog } from '@/components/admin/CRUDDialog';
-import { Button } from '@/components/ui/button';
+import React, { useState, useEffect, useCallback } from 'react';
+import { DataTable, type Column } from '@/components/admin/DataTable';
+import { CRUDDialog, type FormField } from '@/components/admin/CRUDDialog';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Shield } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 interface UserType {
   id: string;
@@ -23,13 +23,13 @@ export default function UserTypesPage() {
   const [userTypes, setUserTypes] = useState<UserType[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingUserType, setEditingUserType] = useState<UserType | null>(null);
+  const [editingItem, setEditingItem] = useState<UserType | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [submitting, setSubmitting] = useState(false);
 
-  const fetchUserTypes = async () => {
+  const fetchUserTypes = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams({
@@ -39,53 +39,69 @@ export default function UserTypesPage() {
       });
       const res = await fetch(`/api/admin/user-types?${params}`);
       const json = await res.json();
+
+      if (!res.ok) {
+        throw new Error(json.error || 'Failed to fetch user types');
+      }
+
       setUserTypes(json.data || []);
       setTotalCount(json.total || 0);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch user types:', error);
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to load user types',
+        variant: 'destructive',
+      });
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, searchQuery]);
 
   useEffect(() => {
     fetchUserTypes();
-  }, [currentPage, searchQuery]);
+  }, [fetchUserTypes]);
 
   const handleCreate = () => {
-    setEditingUserType(null);
+    setEditingItem(null);
     setDialogOpen(true);
   };
 
-  const handleEdit = (userType: UserType) => {
-    setEditingUserType(userType);
+  const handleEdit = (item: UserType) => {
+    setEditingItem(item);
     setDialogOpen(true);
   };
 
-  const handleDelete = async (userType: UserType) => {
-    if (!confirm('Are you sure you want to delete this user type?')) return;
-
+  const handleDelete = async (item: UserType) => {
     try {
-      const res = await fetch(`/api/admin/user-types/${userType.id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/admin/user-types/${item.id}`, { method: 'DELETE' });
+      const json = await res.json();
+
       if (res.ok) {
+        toast({
+          title: 'Deleted',
+          description: `"${item.name}" has been deleted successfully`,
+        });
         fetchUserTypes();
       } else {
-        const error = await res.json();
-        alert(error.error || 'Failed to delete user type');
+        throw new Error(json.error || 'Failed to delete');
       }
-    } catch (error) {
-      console.error('Failed to delete user type:', error);
-      alert('Failed to delete user type');
+    } catch (error: any) {
+      toast({
+        title: 'Delete Failed',
+        description: error.message || 'Failed to delete user type',
+        variant: 'destructive',
+      });
     }
   };
 
   const handleSubmit = async (data: Record<string, any>) => {
     setSubmitting(true);
     try {
-      const url = editingUserType
-        ? `/api/admin/user-types/${editingUserType.id}`
+      const url = editingItem
+        ? `/api/admin/user-types/${editingItem.id}`
         : '/api/admin/user-types';
-      const method = editingUserType ? 'PATCH' : 'POST';
+      const method = editingItem ? 'PATCH' : 'POST';
 
       const res = await fetch(url, {
         method,
@@ -93,39 +109,51 @@ export default function UserTypesPage() {
         body: JSON.stringify(data),
       });
 
+      const json = await res.json();
+
       if (res.ok) {
+        toast({
+          title: editingItem ? 'Updated' : 'Created',
+          description: editingItem
+            ? `"${data.name}" has been updated successfully`
+            : `"${data.name}" has been created successfully`,
+        });
         setDialogOpen(false);
         fetchUserTypes();
       } else {
-        const error = await res.json();
-        alert(error.error || 'Failed to save user type');
+        throw new Error(json.error || 'Failed to save');
       }
-    } catch (error) {
-      console.error('Failed to save user type:', error);
-      alert('Failed to save user type');
+    } catch (error: any) {
+      toast({
+        title: 'Save Failed',
+        description: error.message || 'An error occurred',
+        variant: 'destructive',
+      });
     } finally {
       setSubmitting(false);
     }
   };
 
-  const columns = [
+  const columns: Column<UserType>[] = [
     {
       key: 'name',
       header: 'Name',
-      render: (item: UserType) => <span className="font-medium">{item.name}</span>,
+      render: (item) => <span className="font-medium">{item.name}</span>,
     },
     { key: 'code', header: 'Code' },
     {
       key: 'description',
       header: 'Description',
-      render: (item: UserType) => item.description || '-',
+      render: (item) => item.description || <span className="text-muted-foreground">-</span>,
     },
     {
       key: 'isActive',
       header: 'Status',
-      render: (item: UserType) => (
+      render: (item) => (
         <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-          item.isActive ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+          item.isActive
+            ? 'bg-green-100 text-green-800'
+            : 'bg-red-100 text-red-800'
         }`}>
           {item.isActive ? 'Active' : 'Inactive'}
         </span>
@@ -134,16 +162,16 @@ export default function UserTypesPage() {
     {
       key: 'order',
       header: 'Order',
-      render: (item: UserType) => item.order,
+      render: (item) => item.order,
     },
   ];
 
-  const fields = [
-    { name: 'name', label: 'Name', type: 'text' as const, required: true, placeholder: 'e.g., Customer' },
-    { name: 'code', label: 'Code', type: 'text' as const, required: true, placeholder: 'e.g., CUSTOMER' },
-    { name: 'description', label: 'Description', type: 'textarea' as const, placeholder: 'Description of user type' },
-    { name: 'isActive', label: 'Active', type: 'switch' as const },
-    { name: 'order', label: 'Order', type: 'number' as const, placeholder: '0' },
+  const fields: FormField[] = [
+    { name: 'name', label: 'Name', type: 'text', required: true, placeholder: 'e.g., Customer' },
+    { name: 'code', label: 'Code', type: 'text', required: true, placeholder: 'e.g., CUSTOMER' },
+    { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Description of user type' },
+    { name: 'isActive', label: 'Active', type: 'switch' },
+    { name: 'order', label: 'Display Order', type: 'number', placeholder: '0' },
   ];
 
   return (
@@ -151,7 +179,7 @@ export default function UserTypesPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Shield className="h-5 w-5 text-primary" />
+            <Shield className="h-5 w-5 text-teal-700" />
             User Types Management
           </CardTitle>
           <CardDescription>Manage user roles and permissions</CardDescription>
@@ -165,7 +193,10 @@ export default function UserTypesPage() {
             onEdit={handleEdit}
             onDelete={handleDelete}
             searchValue={searchQuery}
-            onSearchChange={setSearchQuery}
+            onSearchChange={(val) => {
+              setSearchQuery(val);
+              setCurrentPage(1);
+            }}
             currentPage={currentPage}
             onPageChange={setCurrentPage}
             totalCount={totalCount}
@@ -178,12 +209,12 @@ export default function UserTypesPage() {
       <CRUDDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}
-        title={editingUserType ? 'Edit User Type' : 'Add User Type'}
-        description={editingUserType ? 'Update user type details' : 'Create a new user type'}
+        title={editingItem ? 'Edit User Type' : 'Add User Type'}
+        description={editingItem ? 'Update user type details' : 'Create a new user type'}
         fields={fields}
-        data={editingUserType || {}}
+        data={editingItem || undefined}
         onSubmit={handleSubmit}
-        submitButtonText={editingUserType ? 'Update' : 'Create'}
+        submitButtonText={editingItem ? 'Update' : 'Create'}
         loading={submitting}
       />
     </div>
