@@ -157,7 +157,7 @@ export default function BookingsPage() {
           <DataTable data={bookings} columns={columns} loading={loading} onCreate={handleCreate} onEdit={handleEdit} onDelete={handleDelete} searchValue={searchQuery} onSearchChange={setSearchQuery} currentPage={currentPage} onPageChange={setCurrentPage} totalCount={totalCount} searchPlaceholder="Search by booking number or customer..." createButtonText="Add Booking" />
         </CardContent>
       </Card>
-      <CRUDDialog open={dialogOpen} onOpenChange={setDialogOpen} title={editingBooking ? 'Update Booking Status' : 'Add Booking'} fields={fields} data={editingBooking || {}} onSubmit={handleSubmit} submitButtonText={editingBooking ? 'Update' : 'Create'} loading={submitting} />
+      <CRUDDialog key={editingBooking?.id ?? 'create'} open={dialogOpen} onOpenChange={setDialogOpen} title={editingBooking ? 'Update Booking Status' : 'Add Booking'} fields={fields} data={editingBooking || {}} onSubmit={handleSubmit} submitButtonText={editingBooking ? 'Update' : 'Create'} loading={submitting} />
     </div>
   );
 }

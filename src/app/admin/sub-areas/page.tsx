@@ -113,7 +113,7 @@ export default function SubAreasPage() {
           <DataTable data={subAreas} columns={columns} loading={loading} onCreate={handleCreate} onEdit={handleEdit} onDelete={handleDelete} searchValue={searchQuery} onSearchChange={setSearchQuery} currentPage={currentPage} onPageChange={setCurrentPage} totalCount={totalCount} searchPlaceholder="Search by sub-area name..." createButtonText="Add Sub-Area" />
         </CardContent>
       </Card>
-      <CRUDDialog open={dialogOpen} onOpenChange={setDialogOpen} title={editingSubArea ? 'Edit Sub-Area' : 'Add Sub-Area'} fields={fields} data={editingSubArea || {}} onSubmit={handleSubmit} submitButtonText={editingSubArea ? 'Update' : 'Create'} loading={submitting} />
+      <CRUDDialog key={editingSubArea?.id ?? 'create'} open={dialogOpen} onOpenChange={setDialogOpen} title={editingSubArea ? 'Edit Sub-Area' : 'Add Sub-Area'} fields={fields} data={editingSubArea || {}} onSubmit={handleSubmit} submitButtonText={editingSubArea ? 'Update' : 'Create'} loading={submitting} />
     </div>
   );
 }

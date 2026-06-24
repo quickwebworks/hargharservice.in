@@ -322,7 +322,7 @@ export function ServicesPage({ onBack }: ServicesPageProps) {
               <Button variant="ghost" asChild>
                 <a href="/login">Login</a>
               </Button>
-              <Button asChild className="bg-cta hover:bg-cta/foreground text-cta-foreground">
+              <Button asChild className="bg-cta hover:bg-cta-hover text-cta-foreground">
                 <a href="/register">Sign Up</a>
               </Button>
             </div>

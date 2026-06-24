@@ -30,9 +30,9 @@ const config: Config = {
                                 foreground: 'hsl(var(--secondary-foreground))'
                         },
                         cta: {
-                                DEFAULT: 'oklch(0.72 0.15 40)',
-                                foreground: 'oklch(0.31 0.04 215)',
-                                hover: 'oklch(0.65 0.15 40)'
+                                DEFAULT: 'var(--cta)',
+                                foreground: 'var(--cta-foreground)',
+                                hover: 'var(--cta-hover)'
                         },
                         muted: {
                                 DEFAULT: 'hsl(var(--muted))',
@@ -56,46 +56,33 @@ const config: Config = {
                                 '4': 'hsl(var(--chart-4))',
                                 '5': 'hsl(var(--chart-5))'
                         },
-                        // Custom theme colors for easy access
-                        teal: {
-                                50: '#F0FDFA',
-                                100: '#CCFBF1',
-                                200: '#99F6E4',
-                                300: '#5EEAD4',
-                                400: '#2DD4BF',
-                                500: '#14B8A6',
-                                600: '#0D9488',
-                                700: '#0F766E',
-                                800: '#115E59',
-                                900: '#134E4A',
-                                950: '#042F2E'
+                        // Charcoal + Gold theme tokens
+                        charcoal: {
+                                50: '#f7f7f8',
+                                100: '#eeefef',
+                                200: '#d5d6d8',
+                                300: '#b0b2b6',
+                                400: '#8a857c',
+                                500: '#6b6c70',
+                                600: '#56575a',
+                                700: '#4a4b50',
+                                800: '#35363a',
+                                900: '#2a2b2e',
+                                950: '#1a1b1d',
                         },
-                        orange: {
-                                50: '#FFF7ED',
-                                100: '#FFEDD5',
-                                200: '#FED7AA',
-                                300: '#FDBA74',
-                                400: '#FB923C',
-                                500: '#F97316',
-                                600: '#EA580C',
-                                700: '#C2410C',
-                                800: '#9A3412',
-                                900: '#7C2D12',
-                                950: '#431407'
+                        gold: {
+                                50: '#fdf9f3',
+                                100: '#faf3e8',
+                                200: '#f5ebe0',
+                                300: '#e8ddd0',
+                                400: '#dcc9a8',
+                                500: '#d4a869',
+                                600: '#c49555',
+                                700: '#a87a3d',
+                                800: '#8a5a2b',
+                                900: '#6b4520',
+                                950: '#3d2612',
                         },
-                        cream: {
-                                50: '#FFFBEB',
-                                100: '#FEF3C7',
-                                200: '#FDE68A',
-                                300: '#FCD34D',
-                                400: '#FBBF24',
-                                500: '#F59E0B',
-                                600: '#D97706',
-                                700: '#B45309',
-                                800: '#92400E',
-                                900: '#78350F',
-                                950: '#451A03'
-                        }
                 },
                 borderRadius: {
                         lg: 'var(--radius)',

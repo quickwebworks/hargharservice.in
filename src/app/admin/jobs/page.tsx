@@ -164,7 +164,7 @@ export default function JobsPage() {
           <DataTable data={jobs} columns={columns} loading={loading} onCreate={handleCreate} onEdit={handleEdit} onDelete={handleDelete} searchValue={searchQuery} onSearchChange={setSearchQuery} currentPage={currentPage} onPageChange={setCurrentPage} totalCount={totalCount} searchPlaceholder="Search by booking, customer, or service..." createButtonText="Add Job" />
         </CardContent>
       </Card>
-      <CRUDDialog open={dialogOpen} onOpenChange={setDialogOpen} title={editingJob ? 'Edit Job' : 'Add Job'} fields={fields} data={editingJob || {}} onSubmit={handleSubmit} submitButtonText={editingJob ? 'Update' : 'Create'} loading={submitting} />
+      <CRUDDialog key={editingJob?.id ?? 'create'} open={dialogOpen} onOpenChange={setDialogOpen} title={editingJob ? 'Edit Job' : 'Add Job'} fields={fields} data={editingJob || {}} onSubmit={handleSubmit} submitButtonText={editingJob ? 'Update' : 'Create'} loading={submitting} />
     </div>
   );
 }

@@ -100,7 +100,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
                     <div className="text-3xl font-bold text-primary">{service.price}</div>
                     <p className="text-sm text-muted-foreground">+ {service.gst}% GST applicable</p>
                   </div>
-                  <Button size="lg" className="w-full bg-cta hover:bg-cta/foreground text-cta-foreground" onClick={() => setShowDetail(true)}>
+                  <Button size="lg" className="w-full bg-cta hover:bg-cta-hover text-cta-foreground" onClick={() => setShowDetail(true)}>
                     Book This Service
                   </Button>
                 </div>
@@ -204,7 +204,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
                 </div>
               </div>
 
-              <Button size="lg" className="w-full bg-cta hover:bg-cta/foreground text-cta-foreground">
+              <Button size="lg" className="w-full bg-cta hover:bg-cta-hover text-cta-foreground">
                 Proceed to Payment
               </Button>
             </TabsContent>

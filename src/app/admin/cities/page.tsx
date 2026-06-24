@@ -214,6 +214,7 @@ export default function CitiesPage() {
       </Card>
 
       <CRUDDialog
+        key={editingCity?.id ?? 'create'}
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         title={editingCity ? 'Edit City' : 'Add City'}

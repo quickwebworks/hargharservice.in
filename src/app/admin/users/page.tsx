@@ -288,7 +288,7 @@ export default function UsersPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Users className="h-5 w-5 text-teal-700" />
+            <Users className="h-5 w-5 text-foreground" />
             Users Management
           </CardTitle>
           <CardDescription>Manage all users with filters (role, status, location)</CardDescription>
@@ -362,6 +362,7 @@ export default function UsersPage() {
       </Card>
 
       <CRUDDialog
+        key={editingUser?.id ?? 'create'}
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         title={editingUser ? 'Edit User' : 'Add User'}

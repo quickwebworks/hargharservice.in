@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -72,24 +72,23 @@ export function CRUDDialog({
   submitButtonText = 'Save',
   loading = false,
 }: CRUDDialogProps) {
-  // Use a counter to force re-initialization when dialog opens or data changes
-  const [resetKey, setResetKey] = useState(0);
-  const [formData, setFormData] = useState<Record<string, any>>(() => buildInitialFormData(fields, data));
+  const [formData, setFormData] = useState<Record<string, any>>({});
 
-  // Reset form data when dialog opens with new data - use a callback approach
-  const handleOpenChange = useCallback((newOpen: boolean) => {
-    if (newOpen) {
-      // When opening, compute fresh initial data
+  // Initialize form data when the dialog opens.
+  // This MUST be in an effect because the parent controls `open` externally —
+  // the dialog's own onOpenChange does NOT fire when the parent sets open=true.
+  useEffect(() => {
+    if (open) {
+      // Reset form when dialog opens — parent controls `open` externally
+      // so we must sync internal state via an effect.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData(buildInitialFormData(fields, data));
-      setResetKey(prev => prev + 1);
     }
-    onOpenChange(newOpen);
-  }, [fields, data, onOpenChange]);
+  }, [open, data, fields]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Only submit the field values
     const submitData: Record<string, any> = {};
     fields.forEach((field) => {
       submitData[field.name] = formData[field.name];
@@ -100,7 +99,6 @@ export function CRUDDialog({
       if (!field.required && submitData[field.name] === '') {
         submitData[field.name] = null;
       }
-      // Convert number strings to actual numbers
       if (field.type === 'number' && submitData[field.name] !== '') {
         submitData[field.name] = Number(submitData[field.name]);
       }
@@ -114,8 +112,8 @@ export function CRUDDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto" key={resetKey}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}

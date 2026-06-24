@@ -149,9 +149,9 @@ export default function SMSPanelPage() {
         </CardContent>
       </Card>
 
-      <CRUDDialog open={dialogOpen} onOpenChange={setDialogOpen} title={editingSMS ? 'Edit SMS' : 'Send SMS'} fields={fields} data={editingSMS || {}} onSubmit={handleSubmit} submitButtonText={editingSMS ? 'Update' : 'Send'} loading={submitting} />
+      <CRUDDialog key={editingSMS?.id ?? 'create'} open={dialogOpen} onOpenChange={setDialogOpen} title={editingSMS ? 'Edit SMS' : 'Send SMS'} fields={fields} data={editingSMS || {}} onSubmit={handleSubmit} submitButtonText={editingSMS ? 'Update' : 'Send'} loading={submitting} />
 
-      <CRUDDialog open={bulkDialogOpen} onOpenChange={setBulkDialogOpen} title="Send Bulk SMS" fields={bulkFields} data={{}} onSubmit={handleBulkSubmit} submitButtonText="Send Bulk SMS" loading={submitting} />
+      <CRUDDialog key='bulk' open={bulkDialogOpen} onOpenChange={setBulkDialogOpen} title="Send Bulk SMS" fields={bulkFields} data={{}} onSubmit={handleBulkSubmit} submitButtonText="Send Bulk SMS" loading={submitting} />
     </div>
   );
 }

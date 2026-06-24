@@ -179,7 +179,7 @@ export default function UserTypesPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Shield className="h-5 w-5 text-teal-700" />
+            <Shield className="h-5 w-5 text-foreground" />
             User Types Management
           </CardTitle>
           <CardDescription>Manage user roles and permissions</CardDescription>
@@ -207,6 +207,7 @@ export default function UserTypesPage() {
       </Card>
 
       <CRUDDialog
+        key={editingItem?.id ?? 'create'}
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         title={editingItem ? 'Edit User Type' : 'Add User Type'}

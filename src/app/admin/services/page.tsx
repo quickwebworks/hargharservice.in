@@ -119,7 +119,7 @@ export default function ServicesPage() {
           <DataTable data={services} columns={columns} loading={loading} onCreate={handleCreate} onEdit={handleEdit} onDelete={handleDelete} searchValue={searchQuery} onSearchChange={setSearchQuery} currentPage={currentPage} onPageChange={setCurrentPage} totalCount={totalCount} searchPlaceholder="Search by title or slug..." createButtonText="Add Service" />
         </CardContent>
       </Card>
-      <CRUDDialog open={dialogOpen} onOpenChange={setDialogOpen} title={editingService ? 'Edit Service' : 'Add Service'} fields={fields} data={editingService || {}} onSubmit={handleSubmit} submitButtonText={editingService ? 'Update' : 'Create'} loading={submitting} />
+      <CRUDDialog key={editingService?.id ?? 'create'} open={dialogOpen} onOpenChange={setDialogOpen} title={editingService ? 'Edit Service' : 'Add Service'} fields={fields} data={editingService || {}} onSubmit={handleSubmit} submitButtonText={editingService ? 'Update' : 'Create'} loading={submitting} />
     </div>
   );
 }

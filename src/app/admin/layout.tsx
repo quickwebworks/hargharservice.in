@@ -58,7 +58,6 @@ import { Badge } from "@/components/ui/badge"
 import { toast } from "@/hooks/use-toast"
 import { useSession } from 'next-auth/react';
 
-// Define the sidebar menu items structure
 const sidebarItems = [
   {
     title: "Dashboard",
@@ -109,7 +108,6 @@ const sidebarItems = [
   },
 ]
 
-// Header component with profile and actions
 function AdminHeader() {
   const { data: session } = useSession();
   const router = useRouter();
@@ -118,21 +116,14 @@ function AdminHeader() {
   const handleLogout = async () => {
     setIsLoading(true);
     try {
-      // Clear localStorage
       localStorage.removeItem('auth_token');
       localStorage.removeItem('user_info');
-
-      // Sign out from NextAuth
       await signOut({ redirect: false });
-
-      // Call logout API
       await fetch('/api/auth/logout', { method: 'POST' });
-
       toast({
         title: 'Logged Out',
         description: 'You have been successfully logged out',
       });
-
       router.push('/login');
     } catch (error: any) {
       console.error('Logout error:', error);
@@ -147,26 +138,18 @@ function AdminHeader() {
   };
 
   return (
-    <header className="flex h-16 items-center justify-between border-b border-teal-200 bg-white px-6">
+    <header className="flex h-16 items-center justify-between border-b bg-white px-6">
       <div className="flex items-center gap-4">
-        <SidebarTrigger className="text-teal-800 hover:bg-teal-50" />
-        <h1 className="text-xl font-semibold text-teal-800">Admin Dashboard</h1>
+        <SidebarTrigger className="text-foreground hover:bg-muted" />
+        <h1 className="text-xl font-semibold text-foreground">Admin Dashboard</h1>
       </div>
 
       <div className="flex items-center gap-4">
-        {/* Notifications */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative text-teal-700 hover:bg-teal-50 hover:text-teal-800"
-            >
+            <Button variant="ghost" size="icon" className="relative text-foreground hover:bg-muted">
               <Bell className="h-5 w-5" />
-              <Badge
-                variant="destructive"
-                className="absolute -right-1 -top-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-orange-500 hover:bg-orange-600"
-              >
+              <Badge className="absolute -right-1 -top-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-[#d4a869] text-white hover:bg-[#c49555]">
                 3
               </Badge>
             </Button>
@@ -175,36 +158,36 @@ function AdminHeader() {
             <DropdownMenuLabel>Notifications</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <div className="p-2">
-              <div className="flex items-start gap-3 rounded-md p-3 hover:bg-teal-50 cursor-pointer">
-                <div className="flex-shrink-0 h-8 w-8 rounded-full bg-orange-100 flex items-center justify-center">
-                  <CalendarCheck className="h-4 w-4 text-orange-600" />
+              <div className="flex items-start gap-3 rounded-md p-3 hover:bg-muted cursor-pointer">
+                <div className="flex-shrink-0 h-8 w-8 rounded-full bg-[#faf3e8] flex items-center justify-center">
+                  <CalendarCheck className="h-4 w-4 text-[#c49555]" />
                 </div>
                 <div className="flex-1 space-y-1">
-                  <p className="text-sm font-medium text-teal-900">New booking received</p>
+                  <p className="text-sm font-medium">New booking received</p>
                   <p className="text-xs text-muted-foreground">5 minutes ago</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3 rounded-md p-3 hover:bg-teal-50 cursor-pointer">
-                <div className="flex-shrink-0 h-8 w-8 rounded-full bg-teal-100 flex items-center justify-center">
-                  <User className="h-4 w-4 text-teal-600" />
+              <div className="flex items-start gap-3 rounded-md p-3 hover:bg-muted cursor-pointer">
+                <div className="flex-shrink-0 h-8 w-8 rounded-full bg-[#f0ece5] flex items-center justify-center">
+                  <User className="h-4 w-4 text-foreground" />
                 </div>
                 <div className="flex-1 space-y-1">
-                  <p className="text-sm font-medium text-teal-900">New user registered</p>
+                  <p className="text-sm font-medium">New user registered</p>
                   <p className="text-xs text-muted-foreground">15 minutes ago</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3 rounded-md p-3 hover:bg-teal-50 cursor-pointer">
-                <div className="flex-shrink-0 h-8 w-8 rounded-full bg-teal-100 flex items-center justify-center">
-                  <MessageSquare className="h-4 w-4 text-teal-600" />
+              <div className="flex items-start gap-3 rounded-md p-3 hover:bg-muted cursor-pointer">
+                <div className="flex-shrink-0 h-8 w-8 rounded-full bg-[#f0ece5] flex items-center justify-center">
+                  <MessageSquare className="h-4 w-4 text-foreground" />
                 </div>
                 <div className="flex-1 space-y-1">
-                  <p className="text-sm font-medium text-teal-900">SMS campaign sent</p>
+                  <p className="text-sm font-medium">SMS campaign sent</p>
                   <p className="text-xs text-muted-foreground">1 hour ago</p>
                 </div>
               </div>
             </div>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-center text-teal-600 hover:text-teal-800 hover:bg-teal-50">
+            <DropdownMenuItem className="text-center text-[#c49555] hover:text-[#d4a869] hover:bg-muted">
               View all notifications
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -212,19 +195,15 @@ function AdminHeader() {
 
         <Separator orientation="vertical" className="h-6" />
 
-        {/* User Profile */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className="gap-2 text-teal-700 hover:bg-teal-50 hover:text-teal-800"
-            >
+            <Button variant="ghost" className="gap-2 text-foreground hover:bg-muted">
               <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-teal-800">
-                  <User className="h-4 w-4 text-white" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#35363a]">
+                  <User className="h-4 w-4 text-[#d4a869]" />
                 </div>
                 <div className="text-left">
-                  <p className="text-sm font-medium text-teal-900">
+                  <p className="text-sm font-medium">
                     {session?.user?.name || 'Admin'}
                   </p>
                   <p className="text-xs text-muted-foreground">
@@ -238,17 +217,17 @@ function AdminHeader() {
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-teal-700 hover:text-teal-800 hover:bg-teal-50 cursor-pointer">
+            <DropdownMenuItem className="text-foreground hover:bg-muted cursor-pointer">
               <User className="mr-2 h-4 w-4" />
               <span>Profile</span>
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-teal-700 hover:text-teal-800 hover:bg-teal-50 cursor-pointer">
+            <DropdownMenuItem className="text-foreground hover:bg-muted cursor-pointer">
               <Bell className="mr-2 h-4 w-4" />
               <span>Notifications</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="text-orange-600 hover:text-orange-700 hover:bg-orange-50 cursor-pointer"
+              className="text-[#c44536] hover:text-red-700 hover:bg-red-50 cursor-pointer"
               onClick={handleLogout}
               disabled={isLoading}
             >
@@ -262,11 +241,9 @@ function AdminHeader() {
   )
 }
 
-// Main Sidebar component
 function AdminSidebar() {
   const pathname = usePathname()
 
-  // Helper function to check if a path is active
   const isActive = (href: string) => {
     if (href === "/admin") {
       return pathname === href
@@ -276,26 +253,26 @@ function AdminSidebar() {
 
   return (
     <Sidebar
-      className="border-r border-teal-200"
+      className="border-r border-[#4a4b50]"
       style={{
-        "--sidebar-background": "#115E59",
-        "--sidebar-foreground": "#FEF3C7",
-        "--sidebar-primary": "#2DD4BF",
-        "--sidebar-primary-foreground": "#115E59",
-        "--sidebar-accent": "#0D9488",
-        "--sidebar-accent-foreground": "#FEF3C7",
-        "--sidebar-border": "#14B8A6",
-        "--sidebar-ring": "#2DD4BF",
+        "--sidebar-background": "#35363a",
+        "--sidebar-foreground": "#d4a869",
+        "--sidebar-primary": "#d4a869",
+        "--sidebar-primary-foreground": "#35363a",
+        "--sidebar-accent": "#4a4b50",
+        "--sidebar-accent-foreground": "#d4a869",
+        "--sidebar-border": "#4a4b50",
+        "--sidebar-ring": "#d4a869",
       } as React.CSSProperties}
     >
-      <SidebarHeader className="border-b border-teal-700 p-4">
+      <SidebarHeader className="border-b border-[#4a4b50] p-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-500">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#d4a869]">
             <Wrench className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-cream-100">Har Ghar</h2>
-            <p className="text-xs text-cream-200">Admin Panel</p>
+            <h2 className="text-lg font-bold text-[#d4a869]">Har Ghar</h2>
+            <p className="text-xs text-[#d4a869]/60">Admin Panel</p>
           </div>
         </div>
       </SidebarHeader>
@@ -309,7 +286,7 @@ function AdminSidebar() {
                   <>
                     <SidebarMenuButton
                       tooltip={item.title}
-                      className="text-cream-100 hover:bg-teal-700 hover:text-white data-[active=true]:bg-teal-700 data-[active=true]:text-white"
+                      className="text-[#d4a869] hover:bg-[#4a4b50] hover:text-white data-[active=true]:bg-[#4a4b50] data-[active=true]:text-white"
                     >
                       {item.icon && <item.icon className="h-4 w-4" />}
                       <span>{item.title}</span>
@@ -321,7 +298,7 @@ function AdminSidebar() {
                           <SidebarMenuSubButton
                             asChild
                             isActive={isActive(subItem.href)}
-                            className="text-cream-200 hover:bg-teal-700 hover:text-white data-[active=true]:bg-teal-600 data-[active=true]:text-white"
+                            className="text-[#d4a869]/80 hover:bg-[#4a4b50] hover:text-white data-[active=true]:bg-[#4a4b50] data-[active=true]:text-[#d4a869]"
                           >
                             <Link href={subItem.href}>
                               {subItem.icon && <subItem.icon className="h-4 w-4" />}
@@ -337,7 +314,7 @@ function AdminSidebar() {
                     asChild
                     tooltip={item.title}
                     isActive={isActive(item.href!)}
-                    className="text-cream-100 hover:bg-teal-700 hover:text-white data-[active=true]:bg-teal-600 data-[active=true]:text-white"
+                    className="text-[#d4a869] hover:bg-[#4a4b50] hover:text-white data-[active=true]:bg-[#4a4b50] data-[active=true]:text-[#d4a869]"
                   >
                     <Link href={item.href!}>
                       {item.icon && <item.icon className="h-4 w-4" />}
@@ -351,9 +328,9 @@ function AdminSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-teal-700 p-4">
-        <div className="text-xs text-cream-200">
-          <p>© 2025 Har Ghar Services</p>
+      <SidebarFooter className="border-t border-[#4a4b50] p-4">
+        <div className="text-xs text-[#d4a869]/50">
+          <p>&copy; 2025 Har Ghar Services</p>
           <p className="mt-1">Version 1.0.0</p>
         </div>
       </SidebarFooter>
@@ -369,7 +346,7 @@ export default function AdminLayout({
   return (
     <SidebarProvider defaultOpen={true}>
       <AdminSidebar />
-      <SidebarInset className="bg-cream-100">
+      <SidebarInset className="bg-[#faf8f5]">
         <AdminHeader />
         <div className="flex-1 overflow-auto">
           {children}

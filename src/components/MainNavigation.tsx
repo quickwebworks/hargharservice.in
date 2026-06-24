@@ -124,7 +124,7 @@ export function MainNavigation({ onServicesClick, onDashboardClick }: { onServic
                 <Button variant="ghost" asChild>
                   <Link href="/login">Login</Link>
                 </Button>
-                <Button asChild className="bg-cta hover:bg-cta/foreground text-cta-foreground">
+                <Button asChild className="bg-cta hover:bg-cta-hover text-cta-foreground">
                   <Link href="/register">Sign Up</Link>
                 </Button>
               </>
@@ -204,7 +204,7 @@ export function MainNavigation({ onServicesClick, onDashboardClick }: { onServic
                     Login
                   </Link>
                 </Button>
-                <Button asChild className="w-full bg-cta hover:bg-cta/foreground text-cta-foreground">
+                <Button asChild className="w-full bg-cta hover:bg-cta-hover text-cta-foreground">
                   <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
                     Sign Up
                   </Link>

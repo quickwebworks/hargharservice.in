@@ -94,7 +94,7 @@ export default function CategoriesPage() {
           <DataTable data={categories} columns={columns} loading={loading} onCreate={handleCreate} onEdit={handleEdit} onDelete={handleDelete} searchValue={searchQuery} onSearchChange={setSearchQuery} currentPage={currentPage} onPageChange={setCurrentPage} totalCount={totalCount} searchPlaceholder="Search by title or slug..." createButtonText="Add Category" />
         </CardContent>
       </Card>
-      <CRUDDialog open={dialogOpen} onOpenChange={setDialogOpen} title={editingCategory ? 'Edit Category' : 'Add Category'} fields={fields} data={editingCategory || {}} onSubmit={handleSubmit} submitButtonText={editingCategory ? 'Update' : 'Create'} loading={submitting} />
+      <CRUDDialog key={editingCategory?.id ?? 'create'} open={dialogOpen} onOpenChange={setDialogOpen} title={editingCategory ? 'Edit Category' : 'Add Category'} fields={fields} data={editingCategory || {}} onSubmit={handleSubmit} submitButtonText={editingCategory ? 'Update' : 'Create'} loading={submitting} />
     </div>
   );
 }

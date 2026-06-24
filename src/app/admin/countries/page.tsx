@@ -172,6 +172,7 @@ export default function CountriesPage() {
       </Card>
 
       <CRUDDialog
+        key={editingCountry?.id ?? 'create'}
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         title={editingCountry ? 'Edit Country' : 'Add Country'}

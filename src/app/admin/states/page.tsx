@@ -218,6 +218,7 @@ export default function StatesPage() {
       </Card>
 
       <CRUDDialog
+        key={editingState?.id ?? 'create'}
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         title={editingState ? 'Edit State' : 'Add State'}

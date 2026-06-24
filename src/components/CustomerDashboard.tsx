@@ -102,7 +102,7 @@ export function CustomerDashboard({ onBack }: CustomerDashboardProps) {
       case 'ASSIGNED':
         return 'bg-purple-100 text-purple-800';
       case 'IN_PROGRESS':
-        return 'bg-orange-100 text-orange-800';
+        return 'bg-[#faf3e8] text-orange-800';
       case 'COMPLETED':
         return 'bg-green-100 text-green-800';
       case 'CANCELLED':
@@ -215,8 +215,8 @@ export function CustomerDashboard({ onBack }: CustomerDashboardProps) {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-3">
-                <div className="p-3 rounded-lg bg-orange-100">
-                  <Clock className="h-6 w-6 text-orange-600" />
+                <div className="p-3 rounded-lg bg-[#faf3e8]">
+                  <Clock className="h-6 w-6 text-[#c49555]" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">In Progress</p>
@@ -341,14 +341,14 @@ export function CustomerDashboard({ onBack }: CustomerDashboardProps) {
           <TabsContent value="addresses" className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold">Saved Addresses</h3>
-              <Button className="bg-cta hover:bg-cta/foreground text-cta-foreground">
+              <Button className="bg-cta hover:bg-cta-hover text-cta-foreground">
                 <MapPin className="h-4 w-4 mr-2" />
                 Add New Address
               </Button>
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">
-              <Card className="border-2 border-teal-600 bg-teal-50 dark:bg-teal-950/20">
+              <Card className="border-2 border-[#d4a869] bg-[#faf3e8]">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-3">
                     <Badge>Default</Badge>
@@ -450,7 +450,7 @@ export function CustomerDashboard({ onBack }: CustomerDashboardProps) {
                 </div>
 
                 <div className="flex gap-3">
-                  <Button className="bg-cta hover:bg-cta/foreground text-cta-foreground">Save Changes</Button>
+                  <Button className="bg-cta hover:bg-cta-hover text-cta-foreground">Save Changes</Button>
                   <Button variant="outline">Cancel</Button>
                 </div>
 

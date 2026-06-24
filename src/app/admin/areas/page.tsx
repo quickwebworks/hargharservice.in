@@ -195,7 +195,7 @@ export default function AreasPage() {
         </CardContent>
       </Card>
 
-      <CRUDDialog open={dialogOpen} onOpenChange={setDialogOpen} title={editingArea ? 'Edit Area' : 'Add Area'} fields={fields} data={editingArea || {}} onSubmit={handleSubmit} submitButtonText={editingArea ? 'Update' : 'Create'} loading={submitting} />
+      <CRUDDialog key={editingArea?.id ?? 'create'} open={dialogOpen} onOpenChange={setDialogOpen} title={editingArea ? 'Edit Area' : 'Add Area'} fields={fields} data={editingArea || {}} onSubmit={handleSubmit} submitButtonText={editingArea ? 'Update' : 'Create'} loading={submitting} />
     </div>
   );
 }

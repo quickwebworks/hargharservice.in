@@ -163,7 +163,7 @@ export default function RegisterPage() {
                 disabled={isLoading}
               />
             </div>
-            <Button type="submit" className="w-full bg-cta hover:bg-cta/foreground text-cta-foreground" disabled={isLoading}>
+            <Button type="submit" className="w-full bg-cta hover:bg-cta-hover text-cta-foreground" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
