@@ -46,12 +46,29 @@
   --color-cta: var(--cta);
   --color-cta-foreground: var(--cta-foreground);
   --color-cta-hover: var(--cta-hover);
+
+  /* Front-page modern accent tokens */
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-charcoal-light: var(--charcoal-light);
+  --color-sage: var(--sage);
+  --color-sage-light: var(--sage-light);
+  --color-cream: var(--cream);
+  --color-warm-gray: var(--warm-gray);
+  --color-coral: var(--coral);
+  --color-coral-light: var(--coral-light);
+  --color-teal-accent: var(--teal-accent);
+  --color-teal-light: var(--teal-light);
+  --color-lavender: var(--lavender);
+  --color-lavender-light: var(--lavender-light);
+  --color-plum: var(--plum);
+  --color-plum-light: var(--plum-light);
 }
 
 :root {
   --radius: 0.75rem;
 
-  /* Charcoal + Gold Premium Theme — Light Mode */
+  /* ── Charcoal + Gold Premium Theme — Light ── */
   --background: #faf8f5;
   --foreground: #35363a;
   --card: #ffffff;
@@ -59,43 +76,54 @@
   --popover: #ffffff;
   --popover-foreground: #35363a;
 
-  /* Primary: Charcoal #35363a */
   --primary: #35363a;
   --primary-foreground: #ffffff;
 
-  /* Secondary: Warm muted */
   --secondary: #f0ece5;
   --secondary-foreground: #35363a;
 
-  /* Muted */
   --muted: #f0ece5;
   --muted-foreground: #8a857c;
 
-  /* Accent: Gold tint */
   --accent: #faf3e8;
   --accent-foreground: #35363a;
 
-  /* CTA: Gold #d4a869 */
   --cta: #d4a869;
   --cta-foreground: #35363a;
   --cta-hover: #c49555;
 
-  /* Destructive */
   --destructive: #c44536;
   --destructive-foreground: #ffffff;
 
-  /* Border & Input */
   --border: #e8e3db;
   --input: #e0dbd2;
 
-  /* Ring: Gold */
   --ring: #d4a869;
+
+  /* ── Extended modern palette (front-page) ── */
+  --gold: #d4a869;
+  --gold-light: #faf3e8;
+  --charcoal-light: #4a4b50;
+  --sage: #6b8f71;
+  --sage-light: #eef5ef;
+  --cream: #fdf9f3;
+  --warm-gray: #f5f0ea;
+
+  /* ── Modern accent colors ── */
+  --coral: #e07a5f;
+  --coral-light: #fdf0ec;
+  --teal-accent: #3d8b8b;
+  --teal-light: #ecf5f5;
+  --lavender: #8b7ec8;
+  --lavender-light: #f0edf7;
+  --plum: #a85d75;
+  --plum-light: #f7edf1;
 
   /* Chart palette */
   --chart-1: #35363a;
   --chart-2: #d4a869;
   --chart-3: #c49555;
-  --chart-4: #8a857c;
+  --chart-4: #6b8f71;
   --chart-5: #f0ece5;
 
   /* Sidebar: Dark charcoal with gold */
@@ -110,7 +138,6 @@
 }
 
 .dark {
-  /* Dark mode: Deep charcoal with gold */
   --background: #1a1b1d;
   --foreground: #e8e3db;
   --card: #252628;
@@ -142,10 +169,27 @@
 
   --ring: #d4a869;
 
+  --gold: #d4a869;
+  --gold-light: #35363a;
+  --charcoal-light: #56575a;
+  --sage: #7baa82;
+  --sage-light: #2d3e2f;
+  --cream: #252628;
+  --warm-gray: #2d2e31;
+
+  --coral: #e88c74;
+  --coral-light: #352d2b;
+  --teal-accent: #52a8a8;
+  --teal-light: #263636;
+  --lavender: #a08fdb;
+  --lavender-light: #2d2a35;
+  --plum: #be7290;
+  --plum-light: #352a2e;
+
   --chart-1: #d4a869;
   --chart-2: #c49555;
   --chart-3: #e8e3db;
-  --chart-4: #8a857c;
+  --chart-4: #7baa82;
   --chart-5: #35363a;
 
   --sidebar: #1a1b1d;
@@ -164,59 +208,41 @@
   }
   body {
     @apply bg-background text-foreground;
-    /* Retina-ready text rendering */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
 }
 
-/* Custom CTA button — Gold */
+/* ── CTA button — Gold ── */
 .btn-cta {
   background-color: #d4a869;
   color: #35363a;
 }
-
 .btn-cta:hover {
   background-color: #c49555;
 }
-
 .dark .btn-cta {
   background-color: #d4a869;
   color: #1a1b1d;
 }
-
 .dark .btn-cta:hover {
   background-color: #c49555;
 }
 
-/* Retina-ready custom scrollbar */
+/* ── Retina-ready scrollbar ── */
 @layer base {
   * {
     scrollbar-width: thin;
     scrollbar-color: #c4b9a8 transparent;
   }
-
-  *::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-
-  *::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  *::-webkit-scrollbar-thumb {
-    background-color: #c4b9a8;
-    border-radius: 3px;
-  }
-
-  *::-webkit-scrollbar-thumb:hover {
-    background-color: #a89b8a;
-  }
+  *::-webkit-scrollbar { width: 6px; height: 6px; }
+  *::-webkit-scrollbar-track { background: transparent; }
+  *::-webkit-scrollbar-thumb { background-color: #c4b9a8; border-radius: 3px; }
+  *::-webkit-scrollbar-thumb:hover { background-color: #a89b8a; }
 }
 
-/* Retina-ready crisp borders and focus rings */
+/* ── Crisp focus ring ── */
 @layer base {
   *:focus-visible {
     outline: 2px solid #d4a869;
@@ -224,3 +250,86 @@
     border-radius: 4px;
   }
 }
+
+/* ── Mobile-native touch target ── */
+@layer base {
+  button, a, [role="button"], input, select, textarea {
+    min-height: 44px;
+  }
+  @media (min-width: 768px) {
+    button, a, [role="button"], input, select, textarea {
+      min-height: unset;
+    }
+  }
+}
+
+/* ── Hide scrollbar on horizontal scroll areas (mobile-native feel) ── */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Safe area padding for notched devices ── */
+.safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom), 1rem);
+}
+.safe-top {
+  padding-top: max(env(safe-area-inset-top), 0px);
+}
+
+/* ── Glassmorphism utility ── */
+.glass {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.dark .glass {
+  background: rgba(37, 38, 40, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ── Modern gradient text utility ── */
+.gradient-text {
+  background: linear-gradient(135deg, #d4a869 0%, #e07a5f 50%, #8b7ec8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Animated gradient background ── */
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.animated-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+/* ── Modern card hover lift ── */
+.card-lift {
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+}
+.card-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px -12px rgba(0, 0, 0, 0.15);
+}
+.dark .card-lift:hover {
+  box-shadow: 0 12px 40px -12px rgba(0, 0, 0, 0.4);
+}
+
+/* ── Smooth section transitions ── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up {
+  animation: fade-up 0.6s ease-out both;
+}
+.animate-fade-up-delay-1 { animation-delay: 0.1s; }
+.animate-fade-up-delay-2 { animation-delay: 0.2s; }
+.animate-fade-up-delay-3 { animation-delay: 0.3s; }

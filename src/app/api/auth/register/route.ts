@@ -54,21 +54,15 @@ export async function POST(request: NextRequest) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Generate OTP (6 digits)
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes expiry
-
-    // Create user
+    // Create user with ACTIVE status (no OTP required)
     const user = await db.user.create({
       data: {
         name,
         email,
         phone,
         password: hashedPassword,
-        otp,
-        otpExpiry,
         role: 'CUSTOMER',
-        status: 'PENDING',
+        status: 'ACTIVE',
       },
       select: {
         id: true,
@@ -80,16 +74,9 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    // In production, send OTP via SMS/email here
-    // For demo purposes, we'll log it
-    console.log('OTP for', email, ':', otp);
-
     return NextResponse.json({
-      message: 'Registration successful. Please verify your OTP.',
+      message: 'Registration successful! You can now sign in.',
       user,
-      requiresOtp: true,
-      // Only for development - remove in production
-      devOtp: process.env.NODE_ENV === 'development' ? otp : undefined,
     }, { status: 201 });
 
   } catch (error) {
