@@ -1,0 +1,512 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* CTA token — Gold */
+  --color-cta: var(--cta);
+  --color-cta-foreground: var(--cta-foreground);
+  --color-cta-hover: var(--cta-hover);
+
+  /* Front-page modern accent tokens */
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-charcoal-light: var(--charcoal-light);
+  --color-sage: var(--sage);
+  --color-sage-light: var(--sage-light);
+  --color-cream: var(--cream);
+  --color-warm-gray: var(--warm-gray);
+  --color-coral: var(--coral);
+  --color-coral-light: var(--coral-light);
+  --color-teal-accent: var(--teal-accent);
+  --color-teal-light: var(--teal-light);
+  --color-lavender: var(--lavender);
+  --color-lavender-light: var(--lavender-light);
+  --color-plum: var(--plum);
+  --color-plum-light: var(--plum-light);
+}
+
+:root {
+  --radius: 0.75rem;
+
+  /* ── HGS Brand Theme — Charcoal #2b2b2b + Metallic Gold #c9a227 — Light ── */
+  --background: #f7f4ee;
+  --foreground: #2b2b2b;
+  --card: #ffffff;
+  --card-foreground: #2b2b2b;
+  --popover: #ffffff;
+  --popover-foreground: #2b2b2b;
+
+  --primary: #2b2b2b;
+  --primary-foreground: #f0d98c;
+
+  --secondary: #efe9dc;
+  --secondary-foreground: #2b2b2b;
+
+  --muted: #efe9dc;
+  --muted-foreground: #8a857c;
+
+  --accent: #f6efd8;
+  --accent-foreground: #2b2b2b;
+
+  --cta: #c9a227;
+  --cta-foreground: #2b2b2b;
+  --cta-hover: #b8941f;
+
+  --destructive: #c44536;
+  --destructive-foreground: #ffffff;
+
+  --border: #e6dfd0;
+  --input: #ded6c4;
+
+  --ring: #c9a227;
+
+  /* ── Extended HGS brand palette (front-page) ── */
+  --gold: #c9a227;
+  --gold-light: #f6efd8;
+  --charcoal-light: #3a3a3a;
+  --sage: #6b8f71;
+  --sage-light: #eef5ef;
+  --cream: #f9f5ec;
+  --warm-gray: #efe9dc;
+
+  /* ── Modern accent colors ── */
+  --coral: #e07a5f;
+  --coral-light: #fdf0ec;
+  --teal-accent: #3d8b8b;
+  --teal-light: #ecf5f5;
+  --lavender: #8b7ec8;
+  --lavender-light: #f0edf7;
+  --plum: #a85d75;
+  --plum-light: #f7edf1;
+
+  /* Chart palette */
+  --chart-1: #2b2b2b;
+  --chart-2: #c9a227;
+  --chart-3: #b8941f;
+  --chart-4: #6b8f71;
+  --chart-5: #efe9dc;
+
+  /* Sidebar: Dark charcoal with gold */
+  --sidebar: #2b2b2b;
+  --sidebar-foreground: #c9a227;
+  --sidebar-primary: #c9a227;
+  --sidebar-primary-foreground: #2b2b2b;
+  --sidebar-accent: #3a3a3a;
+  --sidebar-accent-foreground: #c9a227;
+  --sidebar-border: #3a3a3a;
+  --sidebar-ring: #c9a227;
+}
+
+.dark {
+  --background: #1f1f1f;
+  --foreground: #efe9dc;
+  --card: #2b2b2b;
+  --card-foreground: #efe9dc;
+  --popover: #2b2b2b;
+  --popover-foreground: #efe9dc;
+
+  --primary: #c9a227;
+  --primary-foreground: #1f1f1f;
+
+  --secondary: #3a3a3a;
+  --secondary-foreground: #efe9dc;
+
+  --muted: #323232;
+  --muted-foreground: #a39c8c;
+
+  --accent: #3a3a3a;
+  --accent-foreground: #c9a227;
+
+  --cta: #c9a227;
+  --cta-foreground: #1f1f1f;
+  --cta-hover: #b8941f;
+
+  --destructive: #e05545;
+  --destructive-foreground: #1f1f1f;
+
+  --border: #404040;
+  --input: #404040;
+
+  --ring: #c9a227;
+
+  --gold: #c9a227;
+  --gold-light: #3a3a3a;
+  --charcoal-light: #56575a;
+  --sage: #7baa82;
+  --sage-light: #2d3e2f;
+  --cream: #2b2b2b;
+  --warm-gray: #323232;
+
+  --coral: #e88c74;
+  --coral-light: #352d2b;
+  --teal-accent: #52a8a8;
+  --teal-light: #263636;
+  --lavender: #a08fdb;
+  --lavender-light: #2d2a35;
+  --plum: #be7290;
+  --plum-light: #352a2e;
+
+  --chart-1: #c9a227;
+  --chart-2: #b8941f;
+  --chart-3: #efe9dc;
+  --chart-4: #7baa82;
+  --chart-5: #3a3a3a;
+
+  --sidebar: #1f1f1f;
+  --sidebar-foreground: #c9a227;
+  --sidebar-primary: #c9a227;
+  --sidebar-primary-foreground: #1f1f1f;
+  --sidebar-accent: #323232;
+  --sidebar-accent-foreground: #c9a227;
+  --sidebar-border: #3a3a3a;
+  --sidebar-ring: #c9a227;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+/* ── CTA button — HGS Metallic Gold ── */
+.btn-cta {
+  background-color: #c9a227;
+  color: #2b2b2b;
+}
+.btn-cta:hover {
+  background-color: #b8941f;
+}
+.dark .btn-cta {
+  background-color: #c9a227;
+  color: #1f1f1f;
+}
+.dark .btn-cta:hover {
+  background-color: #b8941f;
+}
+
+/* ── Primary gold button — dark text on gold (readable, on-brand) ── */
+.btn-gold {
+  background-image: linear-gradient(to right, #dabd4d, #c9a227);
+  color: #2b2b2b;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 10px 25px -8px rgba(201, 162, 39, 0.45);
+  transition: filter 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+.btn-gold:hover {
+  background-image: linear-gradient(to right, #c9a227, #b8941f);
+  box-shadow: 0 14px 32px -8px rgba(201, 162, 39, 0.55);
+  transform: translateY(-1px);
+}
+.btn-gold:active {
+  transform: translateY(0);
+}
+.btn-gold:disabled {
+  opacity: 0.6;
+  transform: none;
+}
+
+/* ── Retina-ready scrollbar ── */
+@layer base {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #c4b9a8 transparent;
+  }
+  *::-webkit-scrollbar { width: 6px; height: 6px; }
+  *::-webkit-scrollbar-track { background: transparent; }
+  *::-webkit-scrollbar-thumb { background-color: #c4b9a8; border-radius: 3px; }
+  *::-webkit-scrollbar-thumb:hover { background-color: #a89b8a; }
+}
+
+/* ── Crisp focus ring ── */
+@layer base {
+  *:focus-visible {
+    outline: 2px solid #c9a227;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+/* ── Mobile-native touch target ── */
+@layer base {
+  button, a, [role="button"], input, select, textarea {
+    min-height: 44px;
+  }
+  @media (min-width: 768px) {
+    button, a, [role="button"], input, select, textarea {
+      min-height: unset;
+    }
+  }
+}
+
+/* ── Hide scrollbar on horizontal scroll areas (mobile-native feel) ── */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Safe area padding for notched devices ── */
+.safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom), 1rem);
+}
+.safe-top {
+  padding-top: max(env(safe-area-inset-top), 0px);
+}
+
+/* ── Glassmorphism utility ── */
+.glass {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.dark .glass {
+  background: rgba(37, 38, 40, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ── HGS gradient text — gold ── */
+.gradient-text {
+  background: linear-gradient(120deg, #e6d084 0%, #c9a227 50%, #b8941f 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Soft glow pulse for hero orbs ── */
+@keyframes glow {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+.animate-glow {
+  animation: glow 7s ease-in-out infinite;
+}
+
+/* ── Animated gradient background ── */
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.animated-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+/* ── Modern card hover lift ── */
+.card-lift {
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+}
+.card-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px -12px rgba(0, 0, 0, 0.15);
+}
+.dark .card-lift:hover {
+  box-shadow: 0 12px 40px -12px rgba(0, 0, 0, 0.4);
+}
+
+/* ── Smooth section transitions ── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up {
+  animation: fade-up 0.6s ease-out both;
+}
+.animate-fade-up-delay-1 { animation-delay: 0.1s; }
+.animate-fade-up-delay-2 { animation-delay: 0.2s; }
+.animate-fade-up-delay-3 { animation-delay: 0.3s; }
+/* ---------------------------------------------------------------
+   CROSS-BROWSER + MOBILE APP-STYLE HARDENING
+   --------------------------------------------------------------- */
+
+/* Dynamic viewport height with fallback (iOS Safari 100vh bug) */
+@layer base {
+  html {
+    height: 100%;
+    /* Prevent iOS text-size adjust on rotate */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* Smooth momentum scrolling on iOS */
+    -webkit-overflow-scrolling: touch;
+  }
+  .min-h-screen {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+  /* Full-height app containers */
+  .h-app {
+    height: 100vh;
+    height: 100dvh;
+  }
+}
+
+/* Respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Prevent iOS auto-zoom on form focus - inputs never below 16px */
+@layer base {
+  input,
+  select,
+  textarea,
+  [contenteditable] {
+    font-size: 16px;
+  }
+  /* Desktop can keep smaller text */
+  @media (min-width: 768px) {
+    input,
+    select,
+    textarea {
+      font-size: 0.875rem;
+    }
+  }
+}
+
+/* Touch target sizing - 44px minimum on coarse pointers */
+@media (pointer: coarse) {
+  button,
+  a,
+  [role="button"],
+  input[type="checkbox"],
+  input[type="radio"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Remove tap highlight on mobile (custom focus styles provided) */
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* Better touch scrolling */
+  .scrollbar-hide {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Sticky elements - iOS Safari fixes */
+@supports (-webkit-touch-callout: none) {
+  .sticky {
+    position: -webkit-sticky;
+    position: sticky;
+  }
+}
+
+/* backdrop-filter fallback for browsers without support */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background: rgba(255, 255, 255, 0.92);
+  }
+  .dark .glass {
+    background: rgba(31, 31, 31, 0.92);
+  }
+  header[class*="backdrop-blur"],
+  .backdrop-blur-lg,
+  .backdrop-blur-sm {
+    background-color: rgba(247, 244, 238, 0.95) !important;
+  }
+  .dark header[class*="backdrop-blur"],
+  .dark .backdrop-blur-lg,
+  .dark .backdrop-blur-sm {
+    background-color: rgba(31, 31, 31, 0.95) !important;
+  }
+}
+
+/* Prevent overscroll bounce chaining to body (keeps sticky usable) */
+@layer base {
+  body {
+    overscroll-behavior-y: none;
+  }
+}
+
+/* Safe-area helpers */
+.safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom), 1rem);
+  padding-bottom: max(constant(safe-area-inset-bottom), 1rem);
+}
+
+/* Focus-visible: strong gold ring for keyboard users only */
+@layer base {
+  *:focus:not(:focus-visible) {
+    outline: none;
+  }
+}
+
+/* Screen-reader-only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Line clamp fallback */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

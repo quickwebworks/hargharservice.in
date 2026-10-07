@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma, handleApiError, getPaginationParams } from '@/lib/prisma-helper';
+import { sendBookingStatusUpdate } from '@/lib/email';
 
 export async function GET(request: NextRequest) {
   try {
@@ -50,7 +51,22 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     const booking = await prisma.booking.update({
       where: { id },
       data: body,
+      include: {
+        customer: { select: { name: true, email: true } },
+        service: { select: { title: true } },
+      },
     });
+
+    // Notify customer by email when booking status changes
+    if (body.bookingStatus && body.bookingStatus !== existing.bookingStatus && booking.customer?.email) {
+      void sendBookingStatusUpdate(booking.customer.email, {
+        bookingNo: booking.bookingNo,
+        serviceTitle: booking.service?.title || 'Service',
+        status: String(booking.bookingStatus),
+        customerName: booking.customer.name || 'Customer',
+      });
+    }
+
     return NextResponse.json(booking);
   } catch (error) {
     return handleApiError(error, 'Failed to update booking');

@@ -2,19 +2,27 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Sparkles, Menu, LogOut, User, X, ChevronRight } from 'lucide-react';
+import { Sparkles, Menu, LogOut, User, X, ChevronRight, Home, LayoutGrid, Phone } from 'lucide-react';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { toast } from '@/hooks/use-toast';
 
 export function MainNavigation({ onServicesClick, onDashboardClick }: { onServicesClick: () => void; onDashboardClick: () => void }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { data: session, status } = useSession();
 
   useEffect(() => {
     document.body.style.overflow = mobileMenuOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -41,19 +49,29 @@ export function MainNavigation({ onServicesClick, onDashboardClick }: { onServic
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur-lg border-b border-border/50 safe-top">
+      {/* ── Glass sticky header ── */}
+      <header
+        className={`sticky top-0 z-50 w-full safe-top transition-all duration-300 ${
+          scrolled
+            ? 'bg-background/80 backdrop-blur-xl border-b border-border/60 shadow-[0_8px_30px_-12px_rgba(10,20,36,0.12)]'
+            : 'bg-background/40 backdrop-blur-md border-b border-transparent'
+        }`}
+      >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex h-14 md:h-16 items-center justify-between">
-            <Link href="/" className="flex items-center gap-2.5 shrink-0">
-              <div className="flex h-9 w-9 md:h-10 md:w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+          <div className={`flex items-center justify-between transition-all duration-300 ${scrolled ? 'h-13 md:h-14' : 'h-14 md:h-16'}`}>
+            <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
+              <div className="relative flex h-9 w-9 md:h-10 md:w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 text-white shadow-lg shadow-brand-500/30 group-hover:scale-105 group-hover:rotate-3 transition-transform">
                 <Sparkles className="h-5 w-5 md:h-6 md:w-6" />
+                <span className="absolute inset-0 rounded-xl ring-1 ring-white/25" />
               </div>
-              <span className="text-lg md:text-xl font-bold tracking-tight">Har Ghar</span>
+              <span className="text-lg md:text-xl font-bold tracking-tight font-display">
+                Har<span className="text-brand-500">Ghar</span>
+              </span>
             </Link>
 
-            <nav className="hidden md:flex items-center gap-1">
+            <nav className="hidden md:flex items-center gap-1 rounded-full border border-border/50 bg-card/60 backdrop-blur-sm px-1.5 py-1">
               {navItems.map((item) => (
-                <button key={item.label} onClick={item.action} className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted/60 transition-colors">
+                <button key={item.label} onClick={item.action} className="px-4 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground rounded-full hover:bg-accent transition-colors">
                   {item.label}
                 </button>
               ))}
@@ -63,48 +81,74 @@ export function MainNavigation({ onServicesClick, onDashboardClick }: { onServic
               {isLoggedIn ? (
                 <>
                   {isAdmin && (
-                    <Button variant="outline" size="sm" asChild>
+                    <Button variant="outline" size="sm" asChild className="rounded-xl">
                       <Link href="/admin">Admin</Link>
                     </Button>
                   )}
-                  <Button variant="ghost" size="sm" onClick={onDashboardClick}>Dashboard</Button>
-                  <Button variant="ghost" size="sm" onClick={handleLogout} className="text-destructive hover:text-destructive hover:bg-destructive/10">
+                  <Button variant="ghost" size="sm" onClick={onDashboardClick} className="rounded-xl">Dashboard</Button>
+                  <Button variant="ghost" size="sm" onClick={handleLogout} className="text-destructive hover:text-destructive hover:bg-destructive/10 rounded-xl">
                     <LogOut className="h-4 w-4 mr-1.5" />Logout
                   </Button>
                 </>
               ) : (
                 <>
-                  <Button variant="ghost" size="sm" asChild><Link href="/login">Login</Link></Button>
-                  <Button size="sm" asChild className="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white font-medium rounded-xl shadow-sm shadow-gold-500/20">
+                  <Button variant="ghost" size="sm" asChild className="rounded-xl"><Link href="/login">Login</Link></Button>
+                  <Button size="sm" asChild className="btn-brand font-medium rounded-xl shadow-sm shadow-brand-500/25">
                     <Link href="/register">Sign Up</Link>
                   </Button>
                 </>
               )}
             </div>
 
-            <button className="md:hidden flex items-center justify-center w-10 h-10 -mr-2 rounded-lg hover:bg-muted transition-colors" onClick={() => setMobileMenuOpen(true)}>
+            <button
+              className="md:hidden flex items-center justify-center w-10 h-10 -mr-2 rounded-xl hover:bg-muted transition-colors"
+              onClick={() => setMobileMenuOpen(true)}
+              aria-label="Open menu"
+            >
               <Menu className="h-5 w-5" />
             </button>
           </div>
         </div>
       </header>
 
-      {/* Mobile Slide-over Menu */}
+      {/* ── Mobile bottom tab bar — app-like, thumb friendly ── */}
+      <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 glass border-t border-border/60 safe-bottom" aria-label="Quick actions">
+        <div className="grid grid-cols-4 px-2 py-1.5">
+          <Link href="/" className="flex flex-col items-center gap-0.5 py-1.5 rounded-xl text-brand-600">
+            <Home className="h-5 w-5" />
+            <span className="text-[10px] font-semibold">Home</span>
+          </Link>
+          <button onClick={onServicesClick} className="flex flex-col items-center gap-0.5 py-1.5 rounded-xl text-muted-foreground hover:text-foreground transition-colors">
+            <LayoutGrid className="h-5 w-5" />
+            <span className="text-[10px] font-semibold">Services</span>
+          </button>
+          <a href="tel:+919780554129" className="flex flex-col items-center gap-0.5 py-1.5 rounded-xl text-muted-foreground hover:text-foreground transition-colors">
+            <Phone className="h-5 w-5" />
+            <span className="text-[10px] font-semibold">Call</span>
+          </a>
+          <button onClick={() => setMobileMenuOpen(true)} className="flex flex-col items-center gap-0.5 py-1.5 rounded-xl text-muted-foreground hover:text-foreground transition-colors">
+            <Menu className="h-5 w-5" />
+            <span className="text-[10px] font-semibold">Menu</span>
+          </button>
+        </div>
+      </nav>
+
+      {/* ── Mobile slide-over menu ── */}
       {mobileMenuOpen && (
         <div className="md:hidden fixed inset-0 z-[100]">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={closeMenu} />
+          <div className="absolute inset-0 bg-ink-950/50 backdrop-blur-sm" onClick={closeMenu} />
           <div className="absolute right-0 top-0 bottom-0 w-[85%] max-w-sm bg-background shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
             <div className="flex items-center justify-between px-5 h-14 border-b">
-              <span className="font-semibold">Menu</span>
-              <button onClick={closeMenu} className="flex items-center justify-center w-9 h-9 rounded-lg hover:bg-muted transition-colors">
+              <span className="font-semibold font-display">Menu</span>
+              <button onClick={closeMenu} className="flex items-center justify-center w-9 h-9 rounded-xl hover:bg-muted transition-colors" aria-label="Close menu">
                 <X className="h-5 w-5" />
               </button>
             </div>
 
             {isLoggedIn && (
-              <div className="px-5 py-4 border-b bg-muted/30">
+              <div className="px-5 py-4 border-b bg-accent/40">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-brand-400 to-brand-600 text-white shadow-md shadow-brand-500/25">
                     <User className="h-5 w-5" />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -117,7 +161,7 @@ export function MainNavigation({ onServicesClick, onDashboardClick }: { onServic
 
             <nav className="flex-1 overflow-y-auto px-3 py-3">
               {navItems.map((item) => (
-                <button key={item.label} onClick={item.action} className="w-full flex items-center justify-between px-4 py-3.5 text-base font-medium rounded-xl hover:bg-muted/70 transition-colors text-left">
+                <button key={item.label} onClick={item.action} className="w-full flex items-center justify-between px-4 py-3.5 text-base font-medium rounded-xl hover:bg-accent/60 transition-colors text-left">
                   {item.label}
                   <ChevronRight className="h-4 w-4 text-muted-foreground" />
                 </button>
@@ -128,23 +172,23 @@ export function MainNavigation({ onServicesClick, onDashboardClick }: { onServic
               {isLoggedIn ? (
                 <>
                   {isAdmin && (
-                    <Button variant="outline" className="w-full h-12" asChild>
+                    <Button variant="outline" className="w-full h-12 rounded-xl" asChild>
                       <Link href="/admin" onClick={closeMenu}>Admin Panel</Link>
                     </Button>
                   )}
-                  <Button variant="outline" className="w-full h-12" onClick={() => { onDashboardClick(); closeMenu(); }}>
+                  <Button variant="outline" className="w-full h-12 rounded-xl" onClick={() => { onDashboardClick(); closeMenu(); }}>
                     My Dashboard
                   </Button>
-                  <Button variant="outline" className="w-full h-12 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={handleLogout}>
+                  <Button variant="outline" className="w-full h-12 rounded-xl text-destructive hover:text-destructive hover:bg-destructive/10" onClick={handleLogout}>
                     <LogOut className="h-4 w-4 mr-2" />Sign Out
                   </Button>
                 </>
               ) : (
                 <>
-                  <Button variant="outline" className="w-full h-12" asChild>
+                  <Button variant="outline" className="w-full h-12 rounded-xl" asChild>
                     <Link href="/login" onClick={closeMenu}>Login</Link>
                   </Button>
-                  <Button className="w-full h-12 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white font-semibold rounded-xl shadow-lg shadow-gold-500/25" asChild>
+                  <Button className="w-full h-12 btn-brand font-semibold rounded-xl shadow-lg shadow-brand-500/25" asChild>
                     <Link href="/register" onClick={closeMenu}>Create Account</Link>
                   </Button>
                 </>

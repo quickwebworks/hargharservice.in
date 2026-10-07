@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { z } from 'zod';
+import { sendBookingConfirmation, sendBookingAdminNotification } from '@/lib/email';
 
 // Validation schema
 const createBookingSchema = z.object({
@@ -19,6 +20,8 @@ const createBookingSchema = z.object({
   notes: z.string().optional(),
   quantity: z.number().min(1).default(1),
   couponCode: z.string().optional(),
+  email: z.string().email().optional(),
+  customerEmail: z.string().email().optional(),
 });
 
 export async function POST(request: NextRequest) {
@@ -126,6 +129,38 @@ export async function POST(request: NextRequest) {
         }
       }
     });
+
+    // Fire-and-forget emails (don't block the response)
+    const addr = [
+      address.addressLine1,
+      address.addressLine2,
+      address.city,
+      address.state,
+      address.pincode,
+    ].filter(Boolean).join(', ');
+
+    const emailData = {
+      bookingNo,
+      customerName: address.fullName,
+      customerEmail: body.email || body.customerEmail || undefined,
+      serviceTitle: service.title,
+      category: service.category?.title,
+      bookingDate: new Date(bookingDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }),
+      timeSlot,
+      quantity,
+      subtotal,
+      gstAmount,
+      discount,
+      totalAmount,
+      address: addr,
+      phone: address.phone,
+      notes,
+    };
+
+    void Promise.allSettled([
+      sendBookingConfirmation(emailData),
+      sendBookingAdminNotification(emailData),
+    ]);
 
     return NextResponse.json({
       message: 'Booking created successfully',

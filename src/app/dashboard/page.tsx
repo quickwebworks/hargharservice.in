@@ -120,17 +120,17 @@ export default function CustomerDashboard() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'PENDING':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-lemon-light text-lemon';
       case 'CONFIRMED':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-sky-light text-sky';
       case 'ASSIGNED':
-        return 'bg-purple-100 text-purple-800';
+        return 'bg-lilac-light text-lilac';
       case 'IN_PROGRESS':
-        return 'bg-[#faf3e8] text-orange-800';
+        return 'bg-brand-100 text-brand-700';
       case 'COMPLETED':
-        return 'bg-green-100 text-green-800';
+        return 'bg-mint-light text-mint';
       case 'CANCELLED':
-        return 'bg-red-100 text-red-800';
+        return 'bg-rose-light text-rose';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -139,13 +139,13 @@ export default function CustomerDashboard() {
   const getPaymentStatusColor = (status: string) => {
     switch (status) {
       case 'PAID':
-        return 'bg-green-100 text-green-800';
+        return 'bg-mint-light text-mint';
       case 'PENDING':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-lemon-light text-lemon';
       case 'FAILED':
-        return 'bg-red-100 text-red-800';
+        return 'bg-rose-light text-rose';
       case 'REFUNDED':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-sky-light text-sky';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -182,7 +182,7 @@ export default function CustomerDashboard() {
         <Card className="mb-6">
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-2xl font-bold text-primary">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-2xl font-bold text-white shadow-lg shadow-brand-500/25">
                 {session.user?.name?.charAt(0).toUpperCase() || 'U'}
               </div>
               <div className="flex-1">
@@ -220,8 +220,8 @@ export default function CustomerDashboard() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-3">
-                <div className="p-3 rounded-lg bg-blue-100">
-                  <Package className="h-6 w-6 text-blue-600" />
+                <div className="p-3 rounded-xl bg-sky-light">
+                  <Package className="h-6 w-6 text-sky" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Total Bookings</p>
@@ -233,8 +233,8 @@ export default function CustomerDashboard() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-3">
-                <div className="p-3 rounded-lg bg-green-100">
-                  <Package className="h-6 w-6 text-green-600" />
+                <div className="p-3 rounded-xl bg-mint-light">
+                  <Package className="h-6 w-6 text-mint" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Completed</p>
@@ -246,8 +246,8 @@ export default function CustomerDashboard() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-3">
-                <div className="p-3 rounded-lg bg-[#faf3e8]">
-                  <Clock className="h-6 w-6 text-[#c49555]" />
+                <div className="p-3 rounded-xl bg-brand-100">
+                  <Clock className="h-6 w-6 text-brand-600" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">In Progress</p>
@@ -259,8 +259,8 @@ export default function CustomerDashboard() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-3">
-                <div className="p-3 rounded-lg bg-purple-100">
-                  <CreditCard className="h-6 w-6 text-purple-600" />
+                <div className="p-3 rounded-xl bg-lilac-light">
+                  <CreditCard className="h-6 w-6 text-lilac" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Total Spent</p>

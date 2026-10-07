@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -38,17 +38,17 @@ export function ServiceCard({ service }: ServiceCardProps) {
 
   return (
     <>
-      <Card className="group cursor-pointer overflow-hidden transition-all border-border/50 h-full flex flex-col card-lift hover:border-border" onClick={() => setShowDetail(true)}>
-        <div className="relative h-36 sm:h-40 bg-gradient-to-br from-warm-gray to-cream flex items-center justify-center shrink-0">
-          <span className="text-6xl sm:text-7xl group-hover:scale-110 transition-transform duration-500">{service.image}</span>
+      <Card className="group cursor-pointer overflow-hidden transition-all border-border/50 h-full flex flex-col card-lift hover:border-brand-500/40 hover:shadow-brand-500/10" onClick={() => setShowDetail(true)}>
+        <div className="relative h-36 sm:h-40 bg-gradient-to-br from-brand-50 via-background to-sky-light flex items-center justify-center shrink-0">
+          <span className="text-6xl sm:text-7xl group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-500">{service.image}</span>
           {service.badge && (
-            <Badge className="absolute top-3 right-3 bg-gold-500 text-white text-[10px] px-2.5 py-0.5 border-0 font-semibold shadow-sm">{service.badge}</Badge>
+            <Badge className="absolute top-3 right-3 bg-coral-500 text-white text-[10px] px-2.5 py-0.5 border-0 font-semibold shadow-sm shadow-coral-500/30">{service.badge}</Badge>
           )}
         </div>
         <CardContent className="p-4 flex flex-col flex-1">
-          <h3 className="font-semibold text-sm sm:text-base mb-1.5 group-hover:text-gold-600 transition-colors line-clamp-1">{service.title}</h3>
+          <h3 className="font-semibold text-sm sm:text-base mb-1.5 group-hover:text-brand-600 transition-colors line-clamp-1">{service.title}</h3>
           <div className="flex items-center gap-1.5 mb-3">
-            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400 shrink-0" />
+            <Star className="h-3.5 w-3.5 fill-lemon text-lemon shrink-0" />
             <span className="text-sm font-medium">{service.rating}</span>
             <span className="text-xs text-muted-foreground">({service.reviews.toLocaleString()})</span>
           </div>
@@ -57,7 +57,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
               <span className="text-lg sm:text-xl font-bold">{service.price}</span>
               <span className="text-[11px] text-muted-foreground ml-0.5">onwards</span>
             </div>
-            <Button variant="outline" size="sm" className="group-hover:bg-gradient-to-r group-hover:from-gold-500 group-hover:to-gold-600 group-hover:text-white group-hover:border-gold-500 group-hover:shadow-sm group-hover:shadow-gold-500/25 transition-all h-9 rounded-xl">
+            <Button variant="outline" size="sm" className="group-hover:bg-gradient-to-r group-hover:from-brand-400 group-hover:to-brand-600 group-hover:text-white group-hover:border-brand-500 group-hover:shadow-sm group-hover:shadow-brand-500/25 transition-all h-9 rounded-xl">
               Book <ChevronRight className="h-3.5 w-3.5 ml-1 group-hover:translate-x-0.5 transition-transform" />
             </Button>
           </div>
@@ -85,7 +85,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center gap-2">
-                    <Star className="h-5 w-5 fill-amber-400 text-amber-400" />
+                    <Star className="h-5 w-5 fill-lemon text-lemon" />
                     <span className="font-semibold text-lg">{service.rating}</span>
                     <span className="text-muted-foreground">({service.reviews.toLocaleString()} reviews)</span>
                   </div>
@@ -98,7 +98,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
                     <div className="text-3xl font-bold text-primary">{service.price}</div>
                     <p className="text-sm text-muted-foreground">+ {service.gst}% GST applicable</p>
                   </div>
-                  <Button size="lg" className="w-full h-12 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white font-semibold rounded-xl shadow-lg shadow-gold-500/25 hover:shadow-gold-500/40" onClick={() => setShowDetail(true)}>
+                  <Button size="lg" className="w-full h-12 btn-brand font-semibold rounded-xl shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40" onClick={() => setShowDetail(true)}>
                     Book This Service
                   </Button>
                 </div>
@@ -114,8 +114,8 @@ export function ServiceCard({ service }: ServiceCardProps) {
                 <ul className="grid sm:grid-cols-2 gap-2">
                   {service.features.map((feature, index) => (
                     <li key={index} className="flex items-start gap-2">
-                      <div className="w-5 h-5 rounded-full bg-sage/20 flex items-center justify-center shrink-0 mt-0.5">
-                        <div className="w-2.5 h-2.5 rounded-full bg-sage" />
+                      <div className="w-5 h-5 rounded-full bg-mint/15 flex items-center justify-center shrink-0 mt-0.5">
+                        <div className="w-2.5 h-2.5 rounded-full bg-mint" />
                       </div>
                       <span className="text-sm">{feature}</span>
                     </li>
@@ -167,7 +167,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
                   </div>
                 </div>
               </div>
-              <Button size="lg" className="w-full h-12 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white font-semibold rounded-xl shadow-lg shadow-gold-500/25 hover:shadow-gold-500/40">
+              <Button size="lg" className="w-full h-12 btn-brand font-semibold rounded-xl shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40">
                 Proceed to Payment
               </Button>
             </TabsContent>
@@ -177,7 +177,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
                 <div className="text-5xl font-bold text-primary mb-2">{service.rating}</div>
                 <div className="flex items-center justify-center gap-1 mb-2">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className={`h-5 w-5 ${i < Math.floor(service.rating) ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}`} />
+                    <Star key={i} className={`h-5 w-5 ${i < Math.floor(service.rating) ? 'fill-lemon text-lemon' : 'text-gray-300'}`} />
                   ))}
                 </div>
                 <p className="text-sm text-muted-foreground">Based on {service.reviews.toLocaleString()} reviews</p>
@@ -195,7 +195,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
                       </div>
                       <div className="flex items-center gap-0.5">
                         {[...Array(5)].map((_, j) => (
-                          <Star key={j} className={`h-3.5 w-3.5 ${j < 5 ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}`} />
+                          <Star key={j} className={`h-3.5 w-3.5 ${j < 5 ? 'fill-lemon text-lemon' : 'text-gray-300'}`} />
                         ))}
                       </div>
                     </div>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
@@ -85,8 +85,8 @@ export default function RegisterPage() {
   // Success state
   if (isSuccess) {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-cream via-background to-warm-gray">
-        <div className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b safe-top">
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-brand-50 via-background to-sky-light">
+        <div className="sticky top-0 z-50 glass border-b safe-top">
           <div className="flex items-center gap-3 px-4 h-14">
             <Button variant="ghost" size="icon" asChild className="-ml-2">
               <Link href="/"><ArrowLeft className="h-5 w-5" /></Link>
@@ -96,7 +96,7 @@ export default function RegisterPage() {
         </div>
         <div className="flex-1 flex items-center justify-center p-4">
           <div className="text-center space-y-4">
-            <div className="inline-flex h-20 w-20 items-center justify-center rounded-full bg-sage-light text-sage">
+            <div className="inline-flex h-20 w-20 items-center justify-center rounded-full bg-mint-light text-mint">
               <CheckCircle2 className="h-10 w-10" />
             </div>
             <h2 className="text-2xl font-bold">Welcome to Har Ghar!</h2>
@@ -109,8 +109,8 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-cream via-background to-warm-gray">
-      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b safe-top">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-brand-50 via-background to-sky-light">
+      <div className="sticky top-0 z-50 glass border-b safe-top">
         <div className="flex items-center gap-3 px-4 h-14">
           <Button variant="ghost" size="icon" asChild className="-ml-2">
             <Link href="/login"><ArrowLeft className="h-5 w-5" /></Link>
@@ -120,10 +120,10 @@ export default function RegisterPage() {
       </div>
 
       <div className="flex-1 flex items-center justify-center p-4 pb-8 md:p-8">
-        <Card className="w-full max-w-md shadow-xl border-0 md:border">
+        <Card className="w-full max-w-md shadow-xl shadow-brand-500/5 border-0 md:border">
           <CardHeader className="space-y-1 text-center pt-8 pb-2 px-6 md:px-8">
             <div className="flex items-center justify-center gap-2 mb-3">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-400 to-brand-600 text-white shadow-lg shadow-brand-500/30">
                 <Sparkles className="h-7 w-7" />
               </div>
             </div>
@@ -154,7 +154,7 @@ export default function RegisterPage() {
                   <Input id="confirm-password" type="password" placeholder="........" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required disabled={isLoading} className="h-12" />
                 </div>
               </div>
-              <Button type="submit" className="w-full h-12 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white font-semibold text-base rounded-xl shadow-lg shadow-gold-500/25 hover:shadow-gold-500/40" disabled={isLoading}>
+              <Button type="submit" className="w-full h-12 btn-brand font-semibold text-base rounded-xl shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40" disabled={isLoading}>
                 {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Creating Account...</> : 'Create Account'}
               </Button>
             </form>

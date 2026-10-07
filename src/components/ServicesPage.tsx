@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -94,7 +94,7 @@ export function ServicesPage({ onBack }: ServicesPageProps) {
                   <Button variant="ghost" size="sm" asChild className="hidden sm:inline-flex">
                     <Link href="/login">Login</Link>
                   </Button>
-                  <Button size="sm" asChild className="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white hidden sm:inline-flex rounded-xl">
+                  <Button size="sm" asChild className="btn-brand hidden sm:inline-flex rounded-xl">
                     <Link href="/register">Sign Up</Link>
                   </Button>
                 </>
@@ -152,7 +152,7 @@ export function ServicesPage({ onBack }: ServicesPageProps) {
       </div>
 
       {/* Category pills — horizontal scroll on mobile */}
-      <div className="bg-warm-gray/30 border-b">
+      <div className="bg-secondary/40 border-b">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible">
             {categories.map((category) => (
@@ -161,8 +161,8 @@ export function ServicesPage({ onBack }: ServicesPageProps) {
                 onClick={() => setSelectedCategory(category.id)}
                 className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
                   selectedCategory === category.id
-                    ? 'bg-gradient-to-r from-gold-500 to-gold-600 text-white shadow-sm shadow-gold-500/25'
-                    : 'bg-card text-muted-foreground border border-border/80 hover:border-gold-500/40 hover:text-foreground'
+                    ? 'bg-gradient-to-r from-brand-400 to-brand-600 text-white shadow-sm shadow-brand-500/25'
+                    : 'bg-card text-muted-foreground border border-border/80 hover:border-brand-500/40 hover:text-foreground'
                 }`}
               >
                 {category.name}

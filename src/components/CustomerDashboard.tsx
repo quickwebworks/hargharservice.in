@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -38,10 +38,10 @@ export function CustomerDashboard({ onBack }: { onBack: () => void }) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'PENDING': return 'bg-amber-100 text-amber-800';
-      case 'CONFIRMED': return 'bg-blue-100 text-blue-800';
-      case 'ASSIGNED': return 'bg-purple-100 text-purple-800';
-      case 'IN_PROGRESS': return 'bg-gold-light text-gold';
-      case 'COMPLETED': return 'bg-sage-light text-sage';
+      case 'CONFIRMED': return 'bg-sky-light text-sky';
+      case 'ASSIGNED': return 'bg-lilac-light text-lilac';
+      case 'IN_PROGRESS': return 'bg-brand-100 text-brand-700';
+      case 'COMPLETED': return 'bg-mint-light text-mint';
       case 'CANCELLED': return 'bg-red-100 text-red-800';
       default: return 'bg-gray-100 text-gray-800';
     }
@@ -71,7 +71,7 @@ export function CustomerDashboard({ onBack }: { onBack: () => void }) {
         <Card className="mb-6 border-border/60">
           <CardContent className="p-4 sm:p-6">
             <div className="flex items-center gap-3 sm:gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-gold-light flex items-center justify-center text-xl font-bold text-gold shrink-0">JD</div>
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-xl font-bold text-white shadow-md shadow-brand-500/25 shrink-0">JD</div>
               <div className="min-w-0 flex-1">
                 <h2 className="text-lg font-bold truncate">John Doe</h2>
                 <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-sm text-muted-foreground">
@@ -87,10 +87,10 @@ export function CustomerDashboard({ onBack }: { onBack: () => void }) {
         {/* Stats — horizontal scroll on mobile */}
         <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-4 sm:gap-4 sm:overflow-visible mb-6">
           {[
-            { label: 'Bookings', value: '12', icon: <Package className="h-5 w-5" />, iconBg: 'bg-blue-100 text-blue-600' },
-            { label: 'Completed', value: '9', icon: <Package className="h-5 w-5" />, iconBg: 'bg-sage-light text-sage' },
-            { label: 'In Progress', value: '2', icon: <Clock className="h-5 w-5" />, iconBg: 'bg-gold-light text-gold' },
-            { label: 'Total Spent', value: '₹15,420', icon: <CreditCard className="h-5 w-5" />, iconBg: 'bg-purple-100 text-purple-600' },
+            { label: 'Bookings', value: '12', icon: <Package className="h-5 w-5" />, iconBg: 'bg-sky-light text-sky' },
+            { label: 'Completed', value: '9', icon: <Package className="h-5 w-5" />, iconBg: 'bg-mint-light text-mint' },
+            { label: 'In Progress', value: '2', icon: <Clock className="h-5 w-5" />, iconBg: 'bg-brand-100 text-brand-600' },
+            { label: 'Total Spent', value: '₹15,420', icon: <CreditCard className="h-5 w-5" />, iconBg: 'bg-lilac-light text-lilac' },
           ].map((stat) => (
             <div key={stat.label} className="shrink-0 w-[150px] sm:w-auto">
               <Card className="border-border/60">
@@ -148,13 +148,13 @@ export function CustomerDashboard({ onBack }: { onBack: () => void }) {
 
           {/* Addresses Tab */}
           <TabsContent value="addresses" className="space-y-3">
-            <Button className="w-full bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white h-12 rounded-xl font-medium shadow-lg shadow-gold-500/25" onClick={() => {}}>
+            <Button className="w-full btn-brand h-12 rounded-xl font-medium shadow-lg shadow-brand-500/25" onClick={() => {}}>
               <MapPin className="h-4 w-4 mr-2" />Add New Address
             </Button>
-            <Card className="border-2 border-gold-500/30 bg-gold-light shadow-sm shadow-gold-500/10">
+            <Card className="border-2 border-brand-500/30 bg-brand-50 shadow-sm shadow-brand-500/10">
               <CardContent className="p-4 sm:p-6">
                 <div className="flex items-start justify-between mb-2">
-                  <Badge className="bg-gold-500 text-white text-[10px]">Default</Badge>
+                  <Badge className="bg-brand-500 text-white text-[10px]">Default</Badge>
                 </div>
                 <h4 className="font-semibold mb-1.5">Home</h4>
                 <p className="text-sm text-muted-foreground leading-relaxed">John Doe<br />+91 98765 43210<br />123, Model Town, Ludhiana, Punjab - 141001</p>
@@ -176,7 +176,7 @@ export function CustomerDashboard({ onBack }: { onBack: () => void }) {
                 <CardContent className="p-4 sm:p-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="p-2.5 rounded-xl bg-sage-light text-sage shrink-0"><CreditCard className="h-5 w-5" /></div>
+                      <div className="p-2.5 rounded-xl bg-mint-light text-mint shrink-0"><CreditCard className="h-5 w-5" /></div>
                       <div className="min-w-0">
                         <h4 className="font-semibold text-sm truncate">{booking.service.title}</h4>
                         <p className="text-xs text-muted-foreground">{booking.bookingNo} · {new Date(booking.bookingDate).toLocaleDateString('en-IN')}</p>
@@ -205,7 +205,7 @@ export function CustomerDashboard({ onBack }: { onBack: () => void }) {
                 </div>
                 <div className="space-y-1.5"><Label>Address</Label><Textarea placeholder="Enter your complete address" rows={3} className="rounded-xl" /></div>
                 <div className="flex gap-3 pt-2">
-                  <Button className="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white h-12 px-6 font-medium rounded-xl shadow-lg shadow-gold-500/25">Save Changes</Button>
+                  <Button className="btn-brand h-12 px-6 font-medium rounded-xl shadow-lg shadow-brand-500/25">Save Changes</Button>
                   <Button variant="outline" className="h-12 px-6 rounded-xl">Cancel</Button>
                 </div>
                 <Separator className="my-2" />
